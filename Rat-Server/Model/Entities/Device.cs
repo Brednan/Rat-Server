@@ -1,19 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace Rat_Server.Model
 {
-    [Index(nameof(Hwid), nameof(Username))]
+    [Index(nameof(Hwid), nameof(Name))]
     public class Device
     {
         [Key]
         [Required]
+        [Column("DeviceHwid")]
         public Guid Hwid { get; set; }
 
         [Required]
         [MaxLength(255)]
-        public string Username { get; set; }
+        public string Name { get; set; }
 
         [Precision(5)]
         public DateTime LastActive { get; set; }

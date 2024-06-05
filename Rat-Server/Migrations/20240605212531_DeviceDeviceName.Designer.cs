@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rat_Server.Model;
 
@@ -11,9 +12,11 @@ using Rat_Server.Model;
 namespace Rat_Server.Migrations
 {
     [DbContext(typeof(RatDbContext))]
-    partial class RatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240605212531_DeviceDeviceName")]
+    partial class DeviceDeviceName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,40 +43,31 @@ namespace Rat_Server.Migrations
                     b.Property<Guid>("DeviceHwid")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("Hwid")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DeviceHwid");
-
                     b.HasKey("commandId");
 
                     b.HasIndex("DeviceHwid");
 
-                    b.ToTable("Commands", t =>
-                        {
-                            t.Property("DeviceHwid")
-                                .HasColumnName("DeviceHwid1");
-                        });
+                    b.ToTable("Commands");
                 });
 
             modelBuilder.Entity("Rat_Server.Model.Device", b =>
                 {
                     b.Property<Guid>("Hwid")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DeviceHwid");
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("DeviceName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime>("LastActive")
                         .HasPrecision(5)
                         .HasColumnType("datetime2(5)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
                     b.HasKey("Hwid");
 
-                    b.HasIndex("Hwid", "Name");
+                    b.HasIndex("Hwid", "DeviceName");
 
                     b.ToTable("Devices");
                 });

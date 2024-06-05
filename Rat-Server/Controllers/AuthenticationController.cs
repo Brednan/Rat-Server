@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Rat_Server.Model;
+using Rat_Server.Model.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -36,6 +38,25 @@ namespace Rat_Server.Controllers
             _config = config;
         }
 
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<string> RegisterDevice([FromBody] RegisterDeviceRequestDto requestBody)
+        {
+            // Check if request body is valid
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(requestBody);
+            }
 
+            // Check if the device is already registered
+            if(_context.Devices.Single(d => d.Hwid.ToString() == requestBody.Hwid) != null)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            return Ok("");  // Placeholder
+        }
     }
 }

