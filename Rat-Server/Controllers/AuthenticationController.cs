@@ -56,6 +56,15 @@ namespace Rat_Server.Controllers
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
 
+            Device device = new Device
+            {
+                Hwid = new Guid(requestBody.Hwid),
+                Name = requestBody.DeviceName,
+                LastActive = DateTime.Now
+            };
+
+            _context.Devices.Add(device);
+
             return Ok("");  // Placeholder
         }
     }
