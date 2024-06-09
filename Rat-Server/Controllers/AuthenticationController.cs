@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Rat_Server.Model;
@@ -16,7 +17,7 @@ namespace Rat_Server.Controllers
         private readonly RatDbContext _context;
         private readonly IConfiguration _config;
 
-        private string generateJwtToken(JwtSecurityToken jwtToken)
+        private string generateJwtToken()
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -39,10 +40,10 @@ namespace Rat_Server.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(RegisterDeviceJwtTokenResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<string> RegisterDevice([FromBody] RegisterDeviceRequestDto requestBody)
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public ActionResult<RegisterDeviceJwtTokenResponseDto> RegisterDevice([FromBody] RegisterDeviceRequestDto requestBody)
         {
             // Check if request body is valid
             if(!ModelState.IsValid)
@@ -51,11 +52,13 @@ namespace Rat_Server.Controllers
             }
 
             // Check if the device is already registered
-            if(_context.Devices.Single(d => d.Hwid.ToString() == requestBody.Hwid) != null)
+            if(_context.Devices.Find(new Guid(requestBody.Hwid)) != null)
             {
+                // Return a 403 error code if it already exists
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
 
+            // Create a Device object that we'll use to add to the database
             Device device = new Device
             {
                 Hwid = new Guid(requestBody.Hwid),
@@ -63,9 +66,14 @@ namespace Rat_Server.Controllers
                 LastActive = DateTime.Now
             };
 
+            // Insert the Device object into the database
             _context.Devices.Add(device);
+            _context.SaveChanges();
 
-            return Ok("");  // Placeholder
+            return Ok(new RegisterDeviceJwtTokenResponseDto
+            {
+                Token = generateJwtToken()
+            });
         }
     }
 }
