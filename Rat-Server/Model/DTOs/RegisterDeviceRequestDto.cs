@@ -2,7 +2,7 @@
 {
     public class RegisterDeviceRequestDto
     {
-        public string Hwid {get;set;}
+        public string Hwid {get; set;}
         public string DeviceName { get;set;}
     }
 }

