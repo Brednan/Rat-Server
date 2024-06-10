@@ -17,6 +17,7 @@ namespace Rat_Server.Model
         [MaxLength(255)]
         public string Name { get; set; }
 
+        [Required]
         [Precision(5)]
         public DateTime LastActive { get; set; }
 

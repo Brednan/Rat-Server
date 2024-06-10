@@ -19,6 +19,7 @@ namespace Rat_Server.Model
         [MaxLength(600)]
         public string CommandValue { get; set; }
 
+        [Required]
         [Precision(5)]
         public DateTime DateAdded { get; set; }
 

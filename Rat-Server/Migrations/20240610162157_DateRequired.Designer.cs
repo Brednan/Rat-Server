@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rat_Server.Model;
 
@@ -11,9 +12,11 @@ using Rat_Server.Model;
 namespace Rat_Server.Migrations
 {
     [DbContext(typeof(RatDbContext))]
-    partial class RatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240610162157_DateRequired")]
+    partial class DateRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +51,7 @@ namespace Rat_Server.Migrations
 
                     b.HasIndex("DeviceHwid");
 
-                    b.ToTable("Commands", null, t =>
+                    b.ToTable("Commands", t =>
                         {
                             t.Property("DeviceHwid")
                                 .HasColumnName("DeviceHwid1");
@@ -75,7 +78,7 @@ namespace Rat_Server.Migrations
 
                     b.HasIndex("Hwid", "Name");
 
-                    b.ToTable("Devices", (string)null);
+                    b.ToTable("Devices");
                 });
 
             modelBuilder.Entity("Rat_Server.Model.Command", b =>
