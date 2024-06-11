@@ -59,7 +59,7 @@ namespace Rat_Server.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            
+            if
 
             return StatusCode(StatusCodes.Status501NotImplemented);
         }
