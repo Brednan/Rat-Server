@@ -58,7 +58,7 @@ namespace Rat_Server.Controllers
             return _passwordHasher.HashPassword(null, password);
         }
 
-        public bool VerifyPassword(string hashedPassword, string providedPassword)
+        private bool VerifyPassword(string hashedPassword, string providedPassword)
         {
             var verificationResult = _passwordHasher.VerifyHashedPassword(null, hashedPassword, providedPassword);
             return verificationResult == PasswordVerificationResult.Success;
@@ -74,6 +74,8 @@ namespace Rat_Server.Controllers
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
+
+            Console.WriteLine($"Password: {_passwordHasher.HashPassword(null, requestBody.Password)}");
 
             User? userInfo = _context.Users.FirstOrDefault(u => u.Name == requestBody.Username);
             
