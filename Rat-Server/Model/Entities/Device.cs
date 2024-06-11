@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
-namespace Rat_Server.Model
+namespace Rat_Server.Model.Entities
 {
     [Index(nameof(Hwid), nameof(Name))]
     public class Device

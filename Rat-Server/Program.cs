@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Rat_Server.Model;
+using Rat_Server.Model.Context;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

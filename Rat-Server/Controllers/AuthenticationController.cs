@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Rat_Server.Model;
+using Rat_Server.Model.Context;
 using Rat_Server.Model.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;

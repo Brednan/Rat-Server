@@ -1,4 +1,4 @@
-﻿namespace Rat_Server.Model
+﻿namespace Rat_Server.Model.DTOs
 {
     /// <summary>
     /// This Dto is what gets sent to the rat client 

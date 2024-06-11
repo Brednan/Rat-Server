@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Rat_Server.Model;
+using Rat_Server.Model.Context;
 
 #nullable disable
 
@@ -22,7 +22,24 @@ namespace Rat_Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Rat_Server.Model.Command", b =>
+            modelBuilder.Entity("Rat_Server.Model.Entities.Admin", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Admin");
+                });
+
+            modelBuilder.Entity("Rat_Server.Model.Entities.Command", b =>
                 {
                     b.Property<Guid>("commandId")
                         .ValueGeneratedOnAdd()
@@ -48,14 +65,14 @@ namespace Rat_Server.Migrations
 
                     b.HasIndex("DeviceHwid");
 
-                    b.ToTable("Commands", null, t =>
+                    b.ToTable("Commands", t =>
                         {
                             t.Property("DeviceHwid")
                                 .HasColumnName("DeviceHwid1");
                         });
                 });
 
-            modelBuilder.Entity("Rat_Server.Model.Device", b =>
+            modelBuilder.Entity("Rat_Server.Model.Entities.Device", b =>
                 {
                     b.Property<Guid>("Hwid")
                         .ValueGeneratedOnAdd()
@@ -75,12 +92,44 @@ namespace Rat_Server.Migrations
 
                     b.HasIndex("Hwid", "Name");
 
-                    b.ToTable("Devices", (string)null);
+                    b.ToTable("Devices");
                 });
 
-            modelBuilder.Entity("Rat_Server.Model.Command", b =>
+            modelBuilder.Entity("Rat_Server.Model.Entities.User", b =>
                 {
-                    b.HasOne("Rat_Server.Model.Device", "Device")
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("User");
+                });
+
+            modelBuilder.Entity("Rat_Server.Model.Entities.Admin", b =>
+                {
+                    b.HasOne("Rat_Server.Model.Entities.User", "User")
+                        .WithOne("Admin")
+                        .HasForeignKey("Rat_Server.Model.Entities.Admin", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Rat_Server.Model.Entities.Command", b =>
+                {
+                    b.HasOne("Rat_Server.Model.Entities.Device", "Device")
                         .WithMany("Commands")
                         .HasForeignKey("DeviceHwid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -89,9 +138,14 @@ namespace Rat_Server.Migrations
                     b.Navigation("Device");
                 });
 
-            modelBuilder.Entity("Rat_Server.Model.Device", b =>
+            modelBuilder.Entity("Rat_Server.Model.Entities.Device", b =>
                 {
                     b.Navigation("Commands");
+                });
+
+            modelBuilder.Entity("Rat_Server.Model.Entities.User", b =>
+                {
+                    b.Navigation("Admin");
                 });
 #pragma warning restore 612, 618
         }

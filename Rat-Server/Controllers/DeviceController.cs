@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Rat_Server.Model;
+using Rat_Server.Model.Entities;
 using Rat_Server.Model.DTOs;
+using Rat_Server.Model.Context;
 
 namespace Rat_Server.Controllers
 {
