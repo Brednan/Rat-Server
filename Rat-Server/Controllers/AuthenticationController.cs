@@ -53,11 +53,6 @@ namespace Rat_Server.Controllers
             return token;
         }
 
-        private string HashPassword(string password)
-        {
-            return _passwordHasher.HashPassword(null, password);
-        }
-
         private bool VerifyPassword(string hashedPassword, string providedPassword)
         {
             var verificationResult = _passwordHasher.VerifyHashedPassword(null, hashedPassword, providedPassword);
