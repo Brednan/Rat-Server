@@ -7,6 +7,9 @@ using Rat_Server.Model.Context;
 using Rat_Server.Model.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Security.Claims;
+using System.Net;
+
 
 namespace Rat_Server.Controllers
 {
@@ -23,20 +26,40 @@ namespace Rat_Server.Controllers
             _config = config;
         }
 
-        private string generateJwtToken()
+        private string generateJwtToken(string UserId, string Username)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            var claims = new Claim[]
+            {
+                new Claim(JwtRegisteredClaimNames.NameId, UserId),
+                new Claim(JwtRegisteredClaimNames.Name, Username)
+            };
+
             var Sectoken = new JwtSecurityToken(_config["Jwt:Issuer"],
               _config["Jwt:Issuer"],
-              null,
+              claims,
               expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
 
             string token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
 
             return token;
+        }
+
+        [HttpPost("Login")]
+        [ProducesResponseType(typeof(JwtTokenDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult<JwtTokenDto> Login([FromBody] UserLoginRequestBodyDto requestBody)
+        {
+            if (!ModelState.IsValid)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            return StatusCode(StatusCodes.Status501NotImplemented);
         }
     }
 }

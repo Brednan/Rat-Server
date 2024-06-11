@@ -24,7 +24,7 @@ namespace Rat_Server.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public StatusCodeResult RegisterDevice([FromBody] RegisterDeviceRequestDto requestBody)
+        public StatusCodeResult RegisterDevice([FromBody] RegisterDeviceRequestBodyDto requestBody)
         {
             // Check if request body is valid
             if (!ModelState.IsValid)

@@ -1,6 +1,6 @@
 ﻿namespace Rat_Server.Model.DTOs
 {
-    public class RegisterDeviceJwtTokenResponseDto
+    public class JwtTokenDto
     {
         public string Token { get; set; }
     }
