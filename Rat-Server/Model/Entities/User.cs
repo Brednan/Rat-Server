@@ -12,7 +12,7 @@ namespace Rat_Server.Model.Entities
         public string Name { get; set; }
 
         [Required]
-        [StringLength(64)]
+        [StringLength(100)]
         public string Password { get; set; }
 
         public Admin? Admin { get; set; }
