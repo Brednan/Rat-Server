@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Rat_Server.Model.Context;
 using System.Text;
@@ -7,8 +8,8 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 //Jwt configuration starts here
-var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
-var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
+var jwtIssuer = builder.Configuration["JWT_ISSUER"];
+var jwtKey = builder.Configuration["JWT_KEY"];
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
  .AddJwtBearer(options =>
