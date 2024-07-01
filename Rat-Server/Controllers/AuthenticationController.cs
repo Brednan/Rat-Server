@@ -31,19 +31,13 @@ namespace Rat_Server.Controllers
             _passwordHasher = new PasswordHasher<string>();
         }
 
-        private string GenerateJwtToken(string UserId, string Username)
+        private string GenerateJwtToken(Claim[] claims)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT_KEY"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new Claim[]
-            {
-                new Claim(JwtRegisteredClaimNames.NameId, UserId),
-                new Claim(JwtRegisteredClaimNames.Name, Username)
-            };
-
-            var Sectoken = new JwtSecurityToken(_config["Jwt:Issuer"],
-              _config["Jwt:Issuer"],
+            var Sectoken = new JwtSecurityToken(_config["JWT_ISSUER"],
+              _config["JWT_ISSUER"],
               claims,
               expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
@@ -70,8 +64,6 @@ namespace Rat_Server.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            Console.WriteLine($"Password: {_passwordHasher.HashPassword(null, requestBody.Password)}");
-
             User? userInfo = _context.Users.FirstOrDefault(u => u.Name == requestBody.Username);
             
             if (userInfo == null)
@@ -86,7 +78,8 @@ namespace Rat_Server.Controllers
 
             return Ok(new JwtTokenDto
             {
-                Token = GenerateJwtToken(userInfo.UserId.ToString(), userInfo.Name)
+                Token = GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
+                                          new Claim(JwtRegisteredClaimNames.Name, userInfo.Name)])
             });
         }
     }

@@ -12,8 +12,7 @@ namespace Rat_Server.Model.Entities
         public Guid commandId { get; set; }
 
         [Required]
-        [Column("DeviceHwid")]
-        public Guid Hwid { get; set; }
+        public Guid DevicedHwid { get; set; }
 
         [Required]
         [MaxLength(600)]

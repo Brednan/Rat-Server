@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rat_Server.Model.Context;
 
@@ -18,18 +17,16 @@ namespace Rat_Server.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.6")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Rat_Server.Model.Entities.Admin", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -43,50 +40,44 @@ namespace Rat_Server.Migrations
                 {
                     b.Property<Guid>("commandId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("CommandValue")
                         .IsRequired()
                         .HasMaxLength(600)
-                        .HasColumnType("nvarchar(600)");
+                        .HasColumnType("varchar(600)");
 
                     b.Property<DateTime>("DateAdded")
                         .HasPrecision(5)
-                        .HasColumnType("datetime2(5)");
+                        .HasColumnType("datetime(5)");
 
                     b.Property<Guid>("DeviceHwid")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
-                    b.Property<Guid>("Hwid")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DeviceHwid");
+                    b.Property<Guid>("DevicedHwid")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("commandId");
 
                     b.HasIndex("DeviceHwid");
 
-                    b.ToTable("Commands", t =>
-                        {
-                            t.Property("DeviceHwid")
-                                .HasColumnName("DeviceHwid1");
-                        });
+                    b.ToTable("Commands");
                 });
 
             modelBuilder.Entity("Rat_Server.Model.Entities.Device", b =>
                 {
                     b.Property<Guid>("Hwid")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DeviceHwid");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("LastActive")
                         .HasPrecision(5)
-                        .HasColumnType("datetime2(5)");
+                        .HasColumnType("datetime(5)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Hwid");
 
@@ -99,17 +90,17 @@ namespace Rat_Server.Migrations
                 {
                     b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("UserId");
 

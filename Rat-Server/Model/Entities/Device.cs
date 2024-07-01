@@ -10,7 +10,6 @@ namespace Rat_Server.Model.Entities
     {
         [Key]
         [Required]
-        [Column("DeviceHwid")]
         public Guid Hwid { get; set; }
 
         [Required]
