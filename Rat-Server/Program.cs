@@ -33,21 +33,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Get the connection string for the database
-var azureConnectionString = String.Empty;
-if (builder.Environment.IsDevelopment())
-{
-    builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.json");
-    azureConnectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
-}
-else
-{
-    azureConnectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
-}
-
-// Perform a Dependency Injection for the Azure Database Context
+// Perform a Dependency Injection for the MySQL Database Context
 builder.Services.AddDbContext<RatDbContext>(options =>
-    options.UseSqlServer(azureConnectionString));
+    options.UseMySQL($"server={builder.Configuration["DATABASE_IP"]};" +
+                     $"database={builder.Configuration["DATABASE_NAME"]};" +
+                     $"user={builder.Configuration["DATABASE_USER"]};" +
+                     $"password={builder.Configuration["DATABASE_PASSWORD"]}"));
 
 var app = builder.Build();
 
