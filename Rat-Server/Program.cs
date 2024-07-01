@@ -7,7 +7,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Jwt configuration starts here
+//Jwt configuration
 var jwtIssuer = builder.Configuration["JWT_ISSUER"];
 var jwtKey = builder.Configuration["JWT_KEY"];
 
@@ -25,7 +25,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
      };
  });
-//Jwt configuration ends here
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -40,6 +39,11 @@ builder.Services.AddDbContext<RatDbContext>(options =>
                      $"database={builder.Configuration["DATABASE_NAME"]};" +
                      $"user={builder.Configuration["DATABASE_USER"]};" +
                      $"password={builder.Configuration["DATABASE_PASSWORD"]}"));
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Admin", "true"));
+});
 
 var app = builder.Build();
 

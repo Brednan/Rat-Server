@@ -11,7 +11,7 @@ using Rat_Server.Model.Context;
 namespace Rat_Server.Migrations
 {
     [DbContext(typeof(RatDbContext))]
-    [Migration("20240701200446_InitialCreate")]
+    [Migration("20240701204938_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -36,7 +36,7 @@ namespace Rat_Server.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Admin");
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("Rat_Server.Model.Entities.Command", b =>
@@ -107,7 +107,7 @@ namespace Rat_Server.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Rat_Server.Model.Entities.Admin", b =>

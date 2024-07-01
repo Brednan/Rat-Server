@@ -12,6 +12,7 @@ using System.Security.Claims;
 using System.Net;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Rat_Server.Controllers
@@ -30,7 +31,7 @@ namespace Rat_Server.Controllers
             _config = config;
             _passwordHasher = new PasswordHasher<string>();
         }
-
+        
         private string GenerateJwtToken(Claim[] claims)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT_KEY"]));
@@ -65,7 +66,7 @@ namespace Rat_Server.Controllers
             }
 
             User? userInfo = _context.Users.FirstOrDefault(u => u.Name == requestBody.Username);
-            
+
             if (userInfo == null)
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
@@ -76,10 +77,16 @@ namespace Rat_Server.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
+            Admin? admin = _context.Admins.FirstOrDefault(a => a.UserId == userInfo.UserId);
+            bool isAdmin = admin != null;
+
             return Ok(new JwtTokenDto
             {
-                Token = GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
-                                          new Claim(JwtRegisteredClaimNames.Name, userInfo.Name)])
+                Token = isAdmin == true ? GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
+                                                            new Claim(JwtRegisteredClaimNames.Name, userInfo.Name),
+                                                            new Claim("Admin", "true")]) 
+                                          : GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
+                                                            new Claim(JwtRegisteredClaimNames.Name, userInfo.Name)])
             });
         }
     }

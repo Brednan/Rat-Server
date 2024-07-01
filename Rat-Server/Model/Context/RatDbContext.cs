@@ -9,7 +9,7 @@ namespace Rat_Server.Model.Context
         public DbSet<Device> Devices { get; set; }
         public DbSet<Command> Commands { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<User> Admins { get; set; }
+        public DbSet<Admin> Admins { get; set; }
 
         public RatDbContext(DbContextOptions<RatDbContext> options) : base(options) { }
 

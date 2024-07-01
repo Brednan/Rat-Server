@@ -33,7 +33,7 @@ namespace Rat_Server.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Admin");
+                    b.ToTable("Admins", (string)null);
                 });
 
             modelBuilder.Entity("Rat_Server.Model.Entities.Command", b =>
@@ -61,7 +61,7 @@ namespace Rat_Server.Migrations
 
                     b.HasIndex("DeviceHwid");
 
-                    b.ToTable("Commands");
+                    b.ToTable("Commands", (string)null);
                 });
 
             modelBuilder.Entity("Rat_Server.Model.Entities.Device", b =>
@@ -83,7 +83,7 @@ namespace Rat_Server.Migrations
 
                     b.HasIndex("Hwid", "Name");
 
-                    b.ToTable("Devices");
+                    b.ToTable("Devices", (string)null);
                 });
 
             modelBuilder.Entity("Rat_Server.Model.Entities.User", b =>
@@ -104,7 +104,7 @@ namespace Rat_Server.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Rat_Server.Model.Entities.Admin", b =>
