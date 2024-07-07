@@ -7,7 +7,9 @@ namespace Rat_Server.Model.Entities
     {
         [Key]
         public int ShellCodeId { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public byte[] Code { get; set; }
     }
 }

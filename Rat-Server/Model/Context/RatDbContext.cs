@@ -10,6 +10,7 @@ namespace Rat_Server.Model.Context
         public DbSet<Command> Commands { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Admin> Admins { get; set; }
+        public DbSet<ShellCode> ShellCodes { get; set; }
 
         public RatDbContext(DbContextOptions<RatDbContext> options) : base(options) { }
 
@@ -19,6 +20,7 @@ namespace Rat_Server.Model.Context
             modelBuilder.Entity<Command>();
             modelBuilder.Entity<User>();
             modelBuilder.Entity<Admin>();
+            modelBuilder.Entity<ShellCode>();
         }
     }
 }
