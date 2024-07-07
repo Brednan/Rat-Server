@@ -16,7 +16,5 @@ namespace Rat_Server.Controllers
             _context = context;
             _config = config;
         }
-
-
     }
 }
