@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Rat_Server.Controllers
 {
+    /// <summary>
+    /// This controller handles everything related to authentication.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase

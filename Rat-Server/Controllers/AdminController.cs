@@ -13,11 +13,11 @@ namespace Rat_Server.Controllers
     [Authorize(Policy = "AdminOnly")]
     [Route("api/[controller]")]
     [ApiController]
-    public class AdminDeviceController : ControllerBase
+    public class AdminController : ControllerBase
     {
         private readonly RatDbContext _context;
 
-        public AdminDeviceController(RatDbContext context)
+        public AdminController(RatDbContext context)
         {
             _context = context;
         }
