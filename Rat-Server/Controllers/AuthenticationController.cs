@@ -81,11 +81,10 @@ namespace Rat_Server.Controllers
             }
 
             Admin? admin = _context.Admins.FirstOrDefault(a => a.UserId == userInfo.UserId);
-            bool isAdmin = admin != null;
 
             return Ok(new JwtTokenDto
             {
-                Token = isAdmin == true ? GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
+                Token = admin != null ? GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
                                                             new Claim(JwtRegisteredClaimNames.Name, userInfo.Name),
                                                             new Claim("Admin", "true")]) 
                                           : GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
