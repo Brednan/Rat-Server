@@ -16,7 +16,7 @@ namespace Rat_Server.Model.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Device>();
+            modelBuilder.Entity<Device>().Property(d => d.LastActive).HasDefaultValue(DateTime.Now);
             modelBuilder.Entity<Command>();
             modelBuilder.Entity<User>();
             modelBuilder.Entity<Admin>();

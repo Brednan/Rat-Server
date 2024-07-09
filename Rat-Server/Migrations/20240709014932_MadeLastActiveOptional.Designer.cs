@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rat_Server.Model.Context;
 
@@ -10,9 +11,11 @@ using Rat_Server.Model.Context;
 namespace Rat_Server.Migrations
 {
     [DbContext(typeof(RatDbContext))]
-    partial class RatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240709014932_MadeLastActiveOptional")]
+    partial class MadeLastActiveOptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
