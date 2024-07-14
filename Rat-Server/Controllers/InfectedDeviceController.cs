@@ -58,12 +58,12 @@ namespace Rat_Server.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
 
-        [HttpGet("GetCurrentCommandForInfectedDevice")]
+        [HttpGet("GetCurrentCommand")]
         [ProducesResponseType(typeof(DeviceCommandDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<DeviceCommandDto> GetCurrentCommandForInfectedDevice([FromHeader] Guid Hwid)
+        public ActionResult<DeviceCommandDto> GetCurrentCommand([FromHeader] Guid Hwid)
         {
             // If the client didn't provide a Hwid, send back a Bad Request status code
             if (!ModelState.IsValid)
