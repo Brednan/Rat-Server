@@ -2,7 +2,7 @@
 
 namespace Rat_Server.Model.DTOs
 {
-    public class AddShellCodeDto
+    public class ShellCodeDto
     {
         [Required]
         public string Name { get; set; }

