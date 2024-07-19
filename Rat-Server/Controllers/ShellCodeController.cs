@@ -16,5 +16,11 @@ namespace Rat_Server.Controllers
             _context = context;
             _config = config;
         }
+
+        [HttpGet("GetShellCode/{Name}")]
+        public Task<ActionResult> GetShellCode()
+        {
+            return Task.FromResult<ActionResult>(Ok());
+        }
     }
 }

