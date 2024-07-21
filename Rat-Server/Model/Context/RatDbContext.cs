@@ -11,6 +11,7 @@ namespace Rat_Server.Model.Context
         public DbSet<User> Users { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<ShellCode> ShellCodes { get; set; }
+        public DbSet<ExeFile> ExeFiles { get; set; }
 
         public RatDbContext(DbContextOptions<RatDbContext> options) : base(options) { }
 
@@ -21,6 +22,7 @@ namespace Rat_Server.Model.Context
             modelBuilder.Entity<User>();
             modelBuilder.Entity<Admin>();
             modelBuilder.Entity<ShellCode>();
+            modelBuilder.Entity<ExeFile>();
         }
     }
 }
