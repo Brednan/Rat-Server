@@ -65,7 +65,7 @@ namespace Rat_Server.Controllers
                 await _context.ShellCodes.AddAsync(new ShellCode
                 {
                     Name = shellCodeDto.Name,
-                    Code = ShellCodeConverter.ToShellCodeByteArray(shellCodeDto.Code)
+                    Code = shellCodeDto.Code
                 });
 
                 await _context.SaveChangesAsync();
@@ -89,7 +89,7 @@ namespace Rat_Server.Controllers
                 shellCodes.Add(new ShellCodeDto
                 {
                     Name = shellCodeEntity.Name,
-                    Code = ShellCodeConverter.ToShellCodeString(shellCodeEntity.Code).ToLower()
+                    Code = shellCodeEntity.Code.ToLower()
                 });
             }
 

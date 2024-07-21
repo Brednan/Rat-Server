@@ -10,6 +10,6 @@ namespace Rat_Server.Model.Entities
         [Required]
         public string Name { get; set; }
         [Required]
-        public byte[] Code { get; set; }
+        public string Code { get; set; }
     }
 }

