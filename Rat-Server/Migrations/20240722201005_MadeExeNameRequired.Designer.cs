@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rat_Server.Model.Context;
 
@@ -10,9 +11,11 @@ using Rat_Server.Model.Context;
 namespace Rat_Server.Migrations
 {
     [DbContext(typeof(RatDbContext))]
-    partial class RatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240722201005_MadeExeNameRequired")]
+    partial class MadeExeNameRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,7 +77,7 @@ namespace Rat_Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasPrecision(5)
                         .HasColumnType("datetime(5)")
-                        .HasDefaultValue(new DateTime(2024, 7, 22, 13, 11, 54, 49, DateTimeKind.Local).AddTicks(6398));
+                        .HasDefaultValue(new DateTime(2024, 7, 22, 13, 10, 5, 0, DateTimeKind.Local).AddTicks(3242));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -122,12 +125,9 @@ namespace Rat_Server.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("ShellCodeId");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("ShellCodes");
                 });
