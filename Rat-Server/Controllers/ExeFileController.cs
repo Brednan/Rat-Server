@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rat_Server.Model.Context;
+using Rat_Server.Model.Entities;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Rat_Server.Controllers
@@ -17,6 +18,20 @@ namespace Rat_Server.Controllers
         {
             _context = context;
             _config = config;
+        }
+
+        [HttpGet("GetExeFile/{Name}")]
+        [ProducesResponseType<ExeFile>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetExeFile([FromHeader] string Hwid, string Name)
+        {
+            ExeFile? exeFile = await _context.ExeFiles.SingleOrDefaultAsync(e => e.Name == Name);
+            if(exeFile == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(exeFile);
         }
     }
 }
