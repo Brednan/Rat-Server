@@ -24,17 +24,5 @@ namespace Rat_Server.Model.Context
             modelBuilder.Entity<ShellCode>();
             modelBuilder.Entity<ExeFile>();
         }
-
-        /// <summary>
-        /// Takes in the Hwid of a device and checks if it exists.
-        /// If the device exists, then the LastActive field is updated
-        /// to the current date and time.
-        /// </summary>
-        /// <param name="Hwid">The Hwid of the device to search for</param>
-        /// <returns>true if the device exists, false if not</returns>
-        public async Task<bool> DeviceAuthentication(Guid Hwid)
-        {
-
-        }
     }
 }
