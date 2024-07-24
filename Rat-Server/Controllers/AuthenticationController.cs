@@ -57,11 +57,11 @@ namespace Rat_Server.Controllers
             return verificationResult == PasswordVerificationResult.Success;
         }
 
-        [HttpPost("Login")]
+        [HttpPost("AdminLogin")]
         [ProducesResponseType(typeof(JwtTokenDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<JwtTokenDto> Login([FromBody] UserLoginRequestBodyDto requestBody)
+        public ActionResult<JwtTokenDto> AdminLogin([FromBody] UserLoginRequestBodyDto requestBody)
         {
             if (!ModelState.IsValid)
             {
