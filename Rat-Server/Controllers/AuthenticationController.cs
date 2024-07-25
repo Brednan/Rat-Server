@@ -13,6 +13,7 @@ using System.Net;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Rat_Server.Controllers
@@ -90,6 +91,34 @@ namespace Rat_Server.Controllers
                                           : GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
                                                             new Claim(JwtRegisteredClaimNames.Name, userInfo.Name)])
             });
+        }
+
+        [HttpPost("RegisterDevice")]
+        [ProducesResponseType<JwtTokenDto>(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<JwtTokenDto>> RegisterDevice([FromBody] RegisterDeviceRequestBodyDto deviceInfo)
+        {
+            if (!ModelState.IsValid) 
+            {
+                return BadRequest(deviceInfo);
+            }
+
+            if (await _context.Devices.SingleOrDefaultAsync<Device>(d => d.Hwid.Equals(deviceInfo.Hwid)) != null)
+            {
+                return Conflict("A device with the same Hwid already exists");
+            }
+
+            Device newDevice = new Device
+            {
+                Hwid = new Guid(deviceInfo.Hwid),
+                Name = deviceInfo.DeviceName
+            };
+
+            _context.Devices.Add(newDevice);
+            _context.SaveChanges();
+
+            return Ok(newDevice);
         }
     }
 }
