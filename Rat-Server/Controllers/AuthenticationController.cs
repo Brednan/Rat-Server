@@ -121,13 +121,29 @@ namespace Rat_Server.Controllers
             return Ok(newDevice);
         }
 
-/*        [HttpPost("DeviceLogin")]
-        [ProducesResponseType<JwtTokenDto>(StatusCodes.Status201Created)]
+        [HttpPost("DeviceLogin")]
+        [ProducesResponseType<JwtTokenDto>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<JwtTokenDto>> DeviceLogin([FromBody] Guid Hwid)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(Hwid);
+            }
 
-        }*/
+            Device? device = await _context.Devices.SingleOrDefaultAsync(d => d.Hwid.Equals(Hwid));
+            if (device == null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(new JwtTokenDto
+            {
+                Token = GenerateJwtToken([new Claim("DeviceRegistered", "true"),
+                                          new Claim("Hwid", device.Hwid.ToString()),
+                                          new Claim(ClaimTypes.Name, device.Name)])
+            });
+        }
     }
 }
