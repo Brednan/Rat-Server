@@ -43,6 +43,7 @@ builder.Services.AddDbContext<RatDbContext>(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Admin", "true"));
+    options.AddPolicy("DeviceAuthenticated", policy => policy.RequireClaim("DeviceAuthenticated", "true"));
 });
 
 var app = builder.Build();
