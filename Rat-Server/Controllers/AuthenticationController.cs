@@ -94,10 +94,10 @@ namespace Rat_Server.Controllers
         }
 
         [HttpPost("RegisterDevice")]
-        [ProducesResponseType<JwtTokenDto>(StatusCodes.Status201Created)]
+        [ProducesResponseType<Device>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<JwtTokenDto>> RegisterDevice([FromBody] RegisterDeviceRequestBodyDto deviceInfo)
+        public async Task<ActionResult<Device>> RegisterDevice([FromBody] RegisterDeviceRequestBodyDto deviceInfo)
         {
             if (!ModelState.IsValid) 
             {
@@ -111,7 +111,7 @@ namespace Rat_Server.Controllers
 
             Device newDevice = new Device
             {
-                Hwid = new Guid(deviceInfo.Hwid),
+                Hwid = deviceInfo.Hwid,
                 Name = deviceInfo.DeviceName
             };
 
@@ -120,5 +120,14 @@ namespace Rat_Server.Controllers
 
             return Ok(newDevice);
         }
+
+/*        [HttpPost("DeviceLogin")]
+        [ProducesResponseType<JwtTokenDto>(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<JwtTokenDto>> DeviceLogin([FromBody] Guid Hwid)
+        {
+
+        }*/
     }
 }

