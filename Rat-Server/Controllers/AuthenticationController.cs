@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Rat_Server.Model.Services;
 
 
 namespace Rat_Server.Controllers
@@ -27,35 +28,15 @@ namespace Rat_Server.Controllers
     { 
         private readonly RatDbContext _context;
         private readonly IConfiguration _config;
-        private readonly IPasswordHasher<string> _passwordHasher;
+        private readonly JwtService _jwtService;
+        private readonly AuthenticationService _authenticationService;
 
         public AuthenticationController(RatDbContext context, IConfiguration config)
         {
             _context = context;
             _config = config;
-            _passwordHasher = new PasswordHasher<string>();
-        }
-        
-        private string GenerateJwtToken(Claim[] claims)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT_KEY"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var Sectoken = new JwtSecurityToken(_config["JWT_ISSUER"],
-              _config["JWT_ISSUER"],
-              claims,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
-
-            string token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
-
-            return token;
-        }
-
-        private bool VerifyPassword(string hashedPassword, string providedPassword)
-        {
-            var verificationResult = _passwordHasher.VerifyHashedPassword(null, hashedPassword, providedPassword);
-            return verificationResult == PasswordVerificationResult.Success;
+            _jwtService = new JwtService(_config);
+            _authenticationService = new AuthenticationService();
         }
 
         [HttpPost("AdminLogin")]
@@ -76,7 +57,7 @@ namespace Rat_Server.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            if(!VerifyPassword(userInfo.Password, requestBody.Password))
+            if(!_authenticationService.VerifyPassword(userInfo.Password, requestBody.Password))
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
@@ -85,11 +66,11 @@ namespace Rat_Server.Controllers
 
             return Ok(new JwtTokenDto
             {
-                Token = admin != null ? GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
-                                                            new Claim(JwtRegisteredClaimNames.Name, userInfo.Name),
-                                                            new Claim("Admin", "true")]) 
-                                          : GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
-                                                            new Claim(JwtRegisteredClaimNames.Name, userInfo.Name)])
+                Token = admin != null ? _jwtService.GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
+                                                                      new Claim(JwtRegisteredClaimNames.Name, userInfo.Name),
+                                                                      new Claim("Admin", "true")]) 
+                                          : _jwtService.GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
+                                                                          new Claim(JwtRegisteredClaimNames.Name, userInfo.Name)])
             });
         }
 
@@ -104,7 +85,7 @@ namespace Rat_Server.Controllers
                 return BadRequest(deviceInfo);
             }
 
-            if (await _context.Devices.SingleOrDefaultAsync<Device>(d => d.Hwid.Equals(deviceInfo.Hwid)) != null)
+            if (await _context.Devices.SingleOrDefaultAsync(d => d.Hwid.Equals(deviceInfo.Hwid)) != null)
             {
                 return Conflict("A device with the same Hwid already exists");
             }
@@ -140,9 +121,9 @@ namespace Rat_Server.Controllers
 
             return Ok(new JwtTokenDto
             {
-                Token = GenerateJwtToken([new Claim("DeviceRegistered", "true"),
-                                          new Claim("Hwid", device.Hwid.ToString()),
-                                          new Claim(ClaimTypes.Name, device.Name)])
+                Token = _jwtService.GenerateJwtToken([new Claim("DeviceRegistered", "true"),
+                                                      new Claim("Hwid", device.Hwid.ToString()),
+                                                      new Claim(ClaimTypes.Name, device.Name)])
             });
         }
     }

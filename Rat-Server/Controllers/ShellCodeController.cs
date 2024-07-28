@@ -5,9 +5,11 @@ using Rat_Server.Model.Context;
 using Rat_Server.Model.Entities;
 using Rat_Server.Model.DTOs;
 using Rat_Server.Model.DataConverter;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Rat_Server.Controllers
 {
+    [Authorize(Policy = "DeviceAuthenticated")]
     [Route("api/[controller]")]
     [ApiController]
     public class ShellCodeController : ControllerBase
