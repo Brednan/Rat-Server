@@ -8,21 +8,13 @@ using System.Text;
 
 namespace Controller_Tests
 {
-    public class AdminControllerTest
+    public class AdminControllerTest: BaseControllerTest
     {
-        private readonly RatDbContext _context;
+        protected readonly AdminController _controller;
 
-        public AdminControllerTest()
+        public AdminControllerTest(): base() 
         {
-            var builder = WebApplication.CreateBuilder();
-            
-            DbContextOptionsBuilder<RatDbContext> options = new DbContextOptionsBuilder<RatDbContext>()
-                .UseMySQL($"server={builder.Configuration["DATABASE_IP"]};" +
-                          $"database={builder.Configuration["DATABASE_NAME"]};" +
-                          $"user={builder.Configuration["DATABASE_USER"]};" +
-                          $"password={builder.Configuration["DATABASE_PASSWORD"]}");
-
-            _context = new RatDbContext(options.Options);
+            _controller = new AdminController(_context);
         }
 
         [Fact]
