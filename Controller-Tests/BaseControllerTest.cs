@@ -17,8 +17,6 @@ namespace Controller_Tests
 
             var config = new ConfigurationBuilder().AddUserSecrets<BaseControllerTest>().Build();
 
-            _output.WriteLine("Config Test Output: " + config["DATABASE_IP"]);
-
             DbContextOptionsBuilder<RatDbContext> options = new DbContextOptionsBuilder<RatDbContext>()
                 .UseMySQL($"server={config["DATABASE_IP"]};" +
                           $"database={config["DATABASE_NAME"]};" +

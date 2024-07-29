@@ -25,8 +25,20 @@ namespace Controller_Tests
         [Fact]
         public void TestGetAllInfectedDevices()
         {
-            var result = _controller.GetAllInfectedDevices();
-            _output.WriteLine(result.ToString());
+            var result = _controller.GetAllInfectedDevices().Result;
+
+            Assert.NotNull(result);
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public void TestGetDeviceCommands()
+        {
+            // Test with random Guid that isn't registered
+            var result = _controller.GetDeviceCommands(new Guid()).Result;
+            
+            Assert.NotNull(result);
+            Assert.IsType<NotFoundObjectResult>(result);
         }
     }
 }
