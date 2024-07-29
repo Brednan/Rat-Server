@@ -1,32 +1,32 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Rat_Server.Controllers;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Rat_Server.Model.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Xunit.Abstractions;
 
 namespace Controller_Tests
 {
     public class BaseControllerTest
     {
         protected readonly RatDbContext _context;
+        protected readonly IConfiguration _config;
+        protected readonly ITestOutputHelper _output;
 
-        public BaseControllerTest()
+        public BaseControllerTest(ITestOutputHelper output)
         {
-            var builder = WebApplication.CreateBuilder();
+            _output = output;
+
+            var config = new ConfigurationBuilder().AddUserSecrets<BaseControllerTest>().Build();
+
+            _output.WriteLine("Config Test Output: " + config["DATABASE_IP"]);
 
             DbContextOptionsBuilder<RatDbContext> options = new DbContextOptionsBuilder<RatDbContext>()
-                .UseMySQL($"server={builder.Configuration["DATABASE_IP"]};" +
-                          $"database={builder.Configuration["DATABASE_NAME"]};" +
-                          $"user={builder.Configuration["DATABASE_USER"]};" +
-                          $"password={builder.Configuration["DATABASE_PASSWORD"]}");
+                .UseMySQL($"server={config["DATABASE_IP"]};" +
+                          $"database={config["DATABASE_NAME"]};" +
+                          $"user={config["DATABASE_USER"]};" +
+                          $"password={config["DATABASE_PASSWORD"]}");
 
             _context = new RatDbContext(options.Options);
-
-
+            _config = config;
         }
     }
 }
