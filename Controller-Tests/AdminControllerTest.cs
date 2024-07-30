@@ -23,12 +23,19 @@ namespace Controller_Tests
         }
 
         [Fact]
-        public void TestGetAllInfectedDevices()
+        public async void TestGetAllInfectedDevices()
         {
-            var result = _controller.GetAllInfectedDevices().Result;
+            List<Device> infectedDevices = await _context.Devices.ToListAsync();
+            var result = await _controller.GetAllInfectedDevices();
 
-            Assert.NotNull(result);
-            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(result.Value);
+            Assert.IsType<OkObjectResult>(result.Result);
+
+            Assert.True(result.Value.Count == infectedDevices.Count);
+            for(int i = 0; i < infectedDevices.Count; i++)
+            {
+                Assert.Equal(result.Value[i], infectedDevices[i]);
+            }
         }
 
         [Fact]
