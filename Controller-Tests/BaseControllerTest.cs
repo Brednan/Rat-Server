@@ -65,13 +65,13 @@ namespace Controller_Tests
         }
 
         /// <summary>
-        /// Used for parsing the Value contained in an ActionResult object.
+        /// Used for parsing the Value contained in an ActionResult.Result object.
         /// This is meant for parsing the content returned from a Controller function.
         /// </summary>
         /// <typeparam name="T">The object Type to be retrieved from the result</typeparam>
         /// <param name="result">The ActionResult returned from the Controller function.</param>
         /// <returns></returns>
-        protected static T GetObjectResultContent<T>(ActionResult<T> result)
+        protected static T GetObjectResultValue<T>(ActionResult<T> result)
         {
             return (T)((ObjectResult)result.Result).Value;
         }

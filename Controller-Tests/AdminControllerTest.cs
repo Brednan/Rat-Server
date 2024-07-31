@@ -28,7 +28,7 @@ namespace Controller_Tests
         {
             List<Device> infectedDevices = await _context.Devices.ToListAsync();
             var result = await _controller.GetAllInfectedDevices();
-            var resultContent = GetObjectResultContent<List<Device>>(result);
+            var resultContent = GetObjectResultValue<List<Device>>(result);
 
             Assert.IsType<OkObjectResult>(result.Result);
             Assert.NotNull(resultContent);
@@ -50,8 +50,19 @@ namespace Controller_Tests
             {
                 commandPlaceholders.Add(await CreateCommandPlaceholder(devicePlaceholder.Hwid, $"Test Command {i}"));
             }
-            
 
+            var actionResult = await _controller.GetDeviceCommands(devicePlaceholder.Hwid);
+            Assert.NotNull(actionResult.Result);
+            Assert.IsType<CreatedAtActionResult>(actionResult.Result);
+
+            var responseValue = GetObjectResultValue<List<Command>>(actionResult.Result);
+            Assert.IsType<List<Command>>(responseValue);
+            Assert.Equal(responseValue.Count, commandPlaceholders.Count);
+
+            for (int i = 0; i < responseValue.Count; i++)
+            {
+                Assert.Equal(responseValue[i].DevicedHwid, commandPlaceholders[i].DevicedHwid);
+            }
         }
     }
 }
