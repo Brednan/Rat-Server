@@ -65,6 +65,20 @@ namespace Controller_Tests
             return command;
         }
 
+        protected async Task<ShellCode> CreateShellCodePlaceholder(string shellCodeName, string shellCodeValue)
+        {
+            ShellCode shellCode = new ShellCode
+            {
+                Code = shellCodeValue,
+                Name = shellCodeName
+            };
+
+            await _context.ShellCodes.AddAsync(shellCode);
+            await _context.SaveChangesAsync();
+
+            return shellCode;
+        }
+
         /// <summary>
         /// Used for parsing the Value contained in an ActionResult.Result object.
         /// This is meant for parsing the content returned from a Controller function.
