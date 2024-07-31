@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Rat_Server.Model.Context;
+using Rat_Server.Model.Entities;
 using Xunit.Abstractions;
 
 namespace Controller_Tests
@@ -28,6 +29,35 @@ namespace Controller_Tests
             _config = config;
         }
 
+
+        /// <summary>
+        /// Created a device object with a random HWID, adds it
+        /// to the database and returns the result. This is meant for
+        /// a test that requires a random device to be in the database.
+        /// </summary>
+        /// <param name="Name">The name of the Device</param>
+        /// <returns>The newly created Device</returns>
+        protected Device CreateRandomDeviceEntity(string Name)
+        {
+            Device device = new Device
+            {
+                Hwid = new Guid(),  // Use a random Hwid
+                Name = "TestGetDeviceCommands",
+                LastActive = DateTime.Now
+            };
+
+            _context.Devices.Add(device);
+            _context.SaveChanges();
+            return device;
+        }
+
+        /// <summary>
+        /// Used for parsing the Value contained in an ActionResult object.
+        /// This is meant for parsing the content returned from a Controller function.
+        /// </summary>
+        /// <typeparam name="T">The object Type to be retrieved from the result</typeparam>
+        /// <param name="result">The ActionResult returned from the Controller function.</param>
+        /// <returns></returns>
         protected static T GetObjectResultContent<T>(ActionResult<T> result)
         {
             return (T)((ObjectResult)result.Result).Value;

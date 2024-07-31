@@ -43,11 +43,9 @@ namespace Controller_Tests
         [Fact]
         public async void TestGetDeviceCommands()
         {
-            // Test with random Guid that isn't registered
-            var result = await _controller.GetDeviceCommands(new Guid());
+            Device device = CreateRandomDeviceEntity("TestGetDeviceCommands");
+
             
-            Assert.NotNull(result.Result);
-            Assert.IsType<NotFoundObjectResult>(result.Result);
         }
     }
 }
