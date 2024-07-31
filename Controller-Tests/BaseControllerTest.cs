@@ -37,7 +37,7 @@ namespace Controller_Tests
         /// </summary>
         /// <param name="Name">The name of the Device</param>
         /// <returns>The newly created Device</returns>
-        protected Device CreateRandomDeviceEntity(string Name)
+        protected async Task<Device> CreateDevicePlaceholder(string Name)
         {
             Device device = new Device
             {
@@ -46,9 +46,22 @@ namespace Controller_Tests
                 LastActive = DateTime.Now
             };
 
-            _context.Devices.Add(device);
-            _context.SaveChanges();
+            await _context.Devices.AddAsync(device);
+            await _context.SaveChangesAsync();
             return device;
+        }
+
+        protected async Task<Command> CreateCommandPlaceholder(Guid DeviceHwid, string CommandValue)
+        {
+            Command command = new Command
+            {
+                DevicedHwid = DeviceHwid,
+                CommandValue = CommandValue
+            };
+            await _context.Commands.AddAsync(command);
+            await _context.SaveChangesAsync();
+
+            return command;
         }
 
         /// <summary>

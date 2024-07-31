@@ -43,9 +43,15 @@ namespace Controller_Tests
         [Fact]
         public async void TestGetDeviceCommands()
         {
-            Device device = CreateRandomDeviceEntity("TestGetDeviceCommands");
-
+            Device devicePlaceholder = await CreateDevicePlaceholder("TestGetDeviceCommands");
+            List<Command> commandPlaceholders = [];
             
+            for (int i = 0; i < 10; i++)
+            {
+                commandPlaceholders.Add(await CreateCommandPlaceholder(devicePlaceholder.Hwid, $"Test Command {i}"));
+            }
+            
+
         }
     }
 }
