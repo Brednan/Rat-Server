@@ -51,12 +51,13 @@ namespace Controller_Tests
             return device;
         }
 
-        protected async Task<Command> CreateCommandPlaceholder(Guid DeviceHwid, string CommandValue)
+        protected async Task<Command> CreateCommandPlaceholder(Device device, string CommandValue)
         {
             Command command = new Command
             {
-                DevicedHwid = DeviceHwid,
-                CommandValue = CommandValue
+                DevicedHwid = device.Hwid,
+                CommandValue = CommandValue,
+                Device = device
             };
             await _context.Commands.AddAsync(command);
             await _context.SaveChangesAsync();

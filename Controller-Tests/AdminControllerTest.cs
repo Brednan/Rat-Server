@@ -48,12 +48,12 @@ namespace Controller_Tests
             
             for (int i = 0; i < 10; i++)
             {
-                commandPlaceholders.Add(await CreateCommandPlaceholder(devicePlaceholder.Hwid, $"Test Command {i}"));
+                commandPlaceholders.Add(await CreateCommandPlaceholder(devicePlaceholder, $"Test Command {i}"));
             }
 
             var actionResult = await _controller.GetDeviceCommands(devicePlaceholder.Hwid);
             Assert.NotNull(actionResult.Result);
-            Assert.IsType<CreatedAtActionResult>(actionResult.Result);
+            Assert.IsType<OkObjectResult>(actionResult.Result);
 
             var responseValue = GetObjectResultValue<List<Command>>(actionResult.Result);
             Assert.IsType<List<Command>>(responseValue);
@@ -61,8 +61,20 @@ namespace Controller_Tests
 
             for (int i = 0; i < responseValue.Count; i++)
             {
-                Assert.Equal(responseValue[i].DevicedHwid, commandPlaceholders[i].DevicedHwid);
+                Command? c = commandPlaceholders.Find(c => c.commandId.Equals(responseValue[i].commandId));
+                Assert.NotNull(c);
+                Assert.Equal(responseValue[i].DevicedHwid, c.DevicedHwid);
+                Assert.Equal(responseValue[i].CommandValue, c.CommandValue);
+                Assert.Equal(responseValue[i].DateAdded, c.DateAdded);
             }
+
+            foreach(Command c in commandPlaceholders)
+            {
+                _context.Commands.Remove(c);
+            }
+
+            _context.Devices.Remove(devicePlaceholder);
+            await _context.SaveChangesAsync();
         }
     }
 }
