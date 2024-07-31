@@ -10,6 +10,7 @@ using System.Text;
 using Xunit.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
+using MySqlX.XDevAPI.Common;
 
 namespace Controller_Tests
 {
@@ -27,25 +28,26 @@ namespace Controller_Tests
         {
             List<Device> infectedDevices = await _context.Devices.ToListAsync();
             var result = await _controller.GetAllInfectedDevices();
+            var resultContent = GetObjectResultContent<List<Device>>(result);
 
-            Assert.NotNull(result.Value);
             Assert.IsType<OkObjectResult>(result.Result);
-
-            Assert.True(result.Value.Count == infectedDevices.Count);
+            Assert.NotNull(resultContent);
+            Assert.True(resultContent.Count == infectedDevices.Count);
+            
             for(int i = 0; i < infectedDevices.Count; i++)
             {
-                Assert.Equal(result.Value[i], infectedDevices[i]);
+                Assert.Equal(resultContent[i], infectedDevices[i]);
             }
         }
 
         [Fact]
-        public void TestGetDeviceCommands()
+        public async void TestGetDeviceCommands()
         {
             // Test with random Guid that isn't registered
-            var result = _controller.GetDeviceCommands(new Guid()).Result;
+            var result = await _controller.GetDeviceCommands(new Guid());
             
-            Assert.NotNull(result);
-            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.NotNull(result.Result);
+            Assert.IsType<NotFoundObjectResult>(result.Result);
         }
     }
 }

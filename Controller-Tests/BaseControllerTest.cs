@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Rat_Server.Model.Context;
 using Xunit.Abstractions;
@@ -25,6 +26,11 @@ namespace Controller_Tests
 
             _context = new RatDbContext(options.Options);
             _config = config;
+        }
+
+        protected static T GetObjectResultContent<T>(ActionResult<T> result)
+        {
+            return (T)((ObjectResult)result.Result).Value;
         }
     }
 }
