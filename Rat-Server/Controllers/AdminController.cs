@@ -46,32 +46,27 @@ namespace Rat_Server.Controllers
         }
 
         [HttpPost("AddShellCode")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult> AddShellCode([FromBody] ShellCodeDto shellCodeDto)
+        [ProducesResponseType<ShellCodeDto>(StatusCodes.Status201Created)]
+        [ProducesResponseType<ConflictObjectResult>(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<ShellCodeDto>> AddShellCode([FromBody] ShellCodeDto shellCodeDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest);
-            }
-
             if(await _context.ShellCodes.CountAsync(b => b.Name == shellCodeDto.Name) > 0)
             {
-                return StatusCode(StatusCodes.Status409Conflict);
+                return Conflict("ShellCode with the same Name already exists");
             }
 
             try
             {
-                await _context.ShellCodes.AddAsync(new ShellCode
+                ShellCode shellCode = new ShellCode
                 {
                     Name = shellCodeDto.Name,
                     Code = shellCodeDto.Code
-                });
+                };
 
+                await _context.ShellCodes.AddAsync(shellCode);
                 await _context.SaveChangesAsync();
 
-                return StatusCode(StatusCodes.Status201Created);
+                return Created();
             }
             catch(ArgumentException ex)
             {

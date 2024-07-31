@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using MySqlX.XDevAPI.Common;
 using Rat_Server.Model.DTOs;
+using Microsoft.AspNetCore.Http;
 
 namespace Controller_Tests
 {
@@ -94,6 +95,40 @@ namespace Controller_Tests
                 Assert.Equal(resultContent[i].Name, shellCodeEntities[i].Name);
                 Assert.Equal(resultContent[i].Code, shellCodeEntities[i].Code);
             }
+        }
+
+        [Fact]
+        private async void TestAddShellCode()
+        {
+            // Test adding shellcode with a name that already exists
+            ShellCode shellCodePlaceholder = await CreateShellCodePlaceholder("ShellCode Placeholder", "ffffffffffffffff");
+            var result = await _controller.AddShellCode(new ShellCodeDto
+            {
+                Code = shellCodePlaceholder.Code,
+                Name = shellCodePlaceholder.Name
+            });
+            
+            Assert.IsType<ConflictObjectResult>(result.Result);
+            
+            _context.Remove(shellCodePlaceholder);
+            await _context.SaveChangesAsync();
+
+            // Test adding ShellCode with a name that doesn't exist
+            result = await _controller.AddShellCode(new ShellCodeDto
+            {
+                Name = "ShellCode Placeholder",
+                Code = "ffffffffffffffff"
+            });
+
+            Assert.NotNull(result.Result);
+            Assert.IsType<CreatedResult>(result.Result);
+
+            // Make sure the shellcode we just added with AddShellCode is actually in the database
+            ShellCode? addedShellCode = await _context.ShellCodes.SingleOrDefaultAsync(c => c.Name.Equals("ShellCode Placeholder"));
+            Assert.NotNull(addedShellCode);
+
+            _context.Remove(addedShellCode);
+            await _context.SaveChangesAsync();
         }
     }
 }
