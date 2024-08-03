@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Security.Policy;
 
 namespace Rat_Server.Model.Services
 {
@@ -23,6 +24,11 @@ namespace Rat_Server.Model.Services
         {
             var verificationResult = _passwordHasher.VerifyHashedPassword(null, hashedPassword, providedPassword);
             return verificationResult == PasswordVerificationResult.Success;
+        }
+
+        public string HashPassword(string password)
+        {
+            return _passwordHasher.HashPassword(null, password);
         }
     }
 }
