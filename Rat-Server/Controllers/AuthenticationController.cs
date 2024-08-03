@@ -45,32 +45,24 @@ namespace Rat_Server.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<JwtTokenDto>> AdminLogin([FromBody] UserLoginRequestBodyDto requestBody)
         {
-            if (!ModelState.IsValid)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest);
-            }
-
             User? userInfo = await _context.Users.FirstOrDefaultAsync(u => u.Name == requestBody.Username);
 
-            if (userInfo == null)
+            if (userInfo == null || !_authenticationService.VerifyPassword(userInfo.Password, requestBody.Password))
             {
-                return StatusCode(StatusCodes.Status401Unauthorized);
-            }
-
-            if(!_authenticationService.VerifyPassword(userInfo.Password, requestBody.Password))
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return Unauthorized();
             }
 
             Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.UserId == userInfo.UserId);
+            if (admin == null)
+            {
+                return Unauthorized();
+            }
 
             return Ok(new JwtTokenDto
             {
-                Token = admin != null ? _jwtService.GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
-                                                                      new Claim(JwtRegisteredClaimNames.Name, userInfo.Name),
-                                                                      new Claim("Admin", "true")]) 
-                                          : _jwtService.GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
-                                                                          new Claim(JwtRegisteredClaimNames.Name, userInfo.Name)])
+                Token = _jwtService.GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
+                                                      new Claim(JwtRegisteredClaimNames.Name, userInfo.Name),
+                                                      new Claim("Admin", "true")])
             });
         }
 

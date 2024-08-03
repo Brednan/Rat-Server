@@ -38,7 +38,7 @@ namespace Rat_Server.Model.Services
         public string GetJwtClaimValue(string jwtToken, string claimType)
         {
             JwtSecurityToken decodedJwtToken = DecodeJwtString(jwtToken);
-            return decodedJwtToken.Claims.First(c => c.ValueType.Equals(claimType)).Value;
+            return decodedJwtToken.Claims.First(c => c.Type.Equals(claimType)).Value;
         }
     }
 }
