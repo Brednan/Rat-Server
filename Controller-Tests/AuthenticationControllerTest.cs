@@ -37,5 +37,24 @@ namespace Controller_Tests
 
             return userPlaceholder;
         }
+
+        private async Task<Admin> CreateAdminPlaceholder(User userPlaceholder)
+        {
+            Admin adminPlaceholder = new Admin
+            {
+                User = userPlaceholder
+            };
+
+            await _context.Admins.AddAsync(adminPlaceholder);
+            await _context.SaveChangesAsync();
+            
+            return adminPlaceholder;
+        }
+
+        private async Task<Admin> CreateAdminPlaceholder(string name, string password)
+        {
+            User userPlaceholder = await CreateUserPlaceholder(name, password);
+            return await CreateAdminPlaceholder(userPlaceholder);
+        }
     }
 }
