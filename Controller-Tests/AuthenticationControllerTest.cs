@@ -20,10 +20,22 @@ namespace Controller_Tests
             _controller = new AuthenticationController(_context, _config);
         }
 
-        private User CreateUserPlaceholder(string name, string password)
+        private async Task<User> CreateUserPlaceholder(string name, string password)
         {
             AuthenticationService authenticationService = new AuthenticationService();
             string hashedPassword = authenticationService.HashPassword(password);
+
+            User userPlaceholder = new User
+            {
+                Name = name,
+                Password = hashedPassword,
+                UserId = Guid.NewGuid()
+            };
+
+            await _context.Users.AddAsync(userPlaceholder);
+            await _context.SaveChangesAsync();
+
+            return userPlaceholder;
         }
     }
 }
