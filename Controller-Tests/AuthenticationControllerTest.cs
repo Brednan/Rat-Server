@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
+using Rat_Server.Model.DTOs;
 
 namespace Controller_Tests
 {
@@ -55,6 +56,20 @@ namespace Controller_Tests
         {
             User userPlaceholder = await CreateUserPlaceholder(name, password);
             return await CreateAdminPlaceholder(userPlaceholder);
+        }
+
+        [Fact]
+        private async void TestAdminLogin()
+        {
+            // Test Login on a user that doesn't exist
+            ActionResult<JwtTokenDto> result = await _controller.AdminLogin(new UserLoginRequestBodyDto
+            {
+
+            });
+
+            User userPlaceholder = await CreateUserPlaceholder("UserPlaceholder", "Password123");
+            
+            // Test 
         }
     }
 }

@@ -43,14 +43,14 @@ namespace Rat_Server.Controllers
         [ProducesResponseType(typeof(JwtTokenDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<JwtTokenDto> AdminLogin([FromBody] UserLoginRequestBodyDto requestBody)
+        public async Task<ActionResult<JwtTokenDto>> AdminLogin([FromBody] UserLoginRequestBodyDto requestBody)
         {
             if (!ModelState.IsValid)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            User? userInfo = _context.Users.FirstOrDefault(u => u.Name == requestBody.Username);
+            User? userInfo = await _context.Users.FirstOrDefaultAsync(u => u.Name == requestBody.Username);
 
             if (userInfo == null)
             {
@@ -62,7 +62,7 @@ namespace Rat_Server.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            Admin? admin = _context.Admins.FirstOrDefault(a => a.UserId == userInfo.UserId);
+            Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.UserId == userInfo.UserId);
 
             return Ok(new JwtTokenDto
             {
