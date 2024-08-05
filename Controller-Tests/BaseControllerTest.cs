@@ -129,6 +129,26 @@ namespace Controller_Tests
             await _context.SaveChangesAsync();
         }
 
+        protected async Task<Device> CreateDevicePlaceholder(Guid Hwid, string Name)
+        {
+            Device devicePlaceholder = new Device
+            {
+                Hwid = Hwid,
+                Name = Name
+            };
+
+            await _context.Devices.AddAsync(devicePlaceholder);
+            await _context.SaveChangesAsync();
+
+            return devicePlaceholder;
+        }
+
+        protected async Task DeleteDevicePlaceholder(Device devicePlaceholder)
+        {
+            _context.Devices.Remove(devicePlaceholder);
+            await _context.SaveChangesAsync();
+        }
+
         /// <summary>
         /// Used for parsing the Value contained in an ActionResult.Result object.
         /// This is meant for parsing the content returned from a Controller function.
