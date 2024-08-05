@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Rat_Server.Model.Context;
 using Rat_Server.Model.Entities;
+using Rat_Server.Model.Services;
 using Xunit.Abstractions;
 
 namespace Controller_Tests
@@ -77,6 +78,55 @@ namespace Controller_Tests
             await _context.SaveChangesAsync();
 
             return shellCode;
+        }
+
+        protected async Task<User> CreateUserPlaceholder(string name, string password)
+        {
+            AuthenticationService authenticationService = new AuthenticationService();
+            string hashedPassword = authenticationService.HashPassword(password);
+
+            User userPlaceholder = new User
+            {
+                Name = name,
+                Password = hashedPassword,
+                UserId = Guid.NewGuid()
+            };
+
+            await _context.Users.AddAsync(userPlaceholder);
+            await _context.SaveChangesAsync();
+
+            return userPlaceholder;
+        }
+
+        protected async Task<Admin> CreateAdminPlaceholder(User userPlaceholder)
+        {
+            Admin adminPlaceholder = new Admin
+            {
+                User = userPlaceholder
+            };
+
+            await _context.Admins.AddAsync(adminPlaceholder);
+            await _context.SaveChangesAsync();
+
+            return adminPlaceholder;
+        }
+
+        protected async Task<Admin> CreateAdminPlaceholder(string name, string password)
+        {
+            User userPlaceholder = await CreateUserPlaceholder(name, password);
+            return await CreateAdminPlaceholder(userPlaceholder);
+        }
+
+        protected async Task DeleteAdminPlaceholder(Admin adminPlaceholder)
+        {
+            _context.Admins.Remove(adminPlaceholder);
+            await _context.SaveChangesAsync();
+        }
+
+        protected async Task DeleteUserPlaceholder(User userPlaceholder)
+        {
+            _context.Users.Remove(userPlaceholder);
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
