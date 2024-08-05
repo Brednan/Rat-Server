@@ -27,9 +27,13 @@ namespace Controller_Tests
         [Fact]
         private async void TestAdminLogin()
         {
+            // Use a Guid to generate a value for the Username to make sure it's unique for this test
+            string randomUsernameValue = Guid.NewGuid().ToString();
+            _output.WriteLine(randomUsernameValue);
+
             UserLoginRequestBodyDto loginRequestBodyDto = new UserLoginRequestBodyDto
             {
-                Username = "UserPlaceholder",
+                Username = randomUsernameValue,
                 Password = "Password123"
             };
 
@@ -39,7 +43,7 @@ namespace Controller_Tests
             Assert.IsType<UnauthorizedResult>(result.Result);
 
             // Test with a user that exists but is not an admin
-            User userPlaceholder = await CreateUserPlaceholder("UserPlaceholder", "Password123");
+            User userPlaceholder = await CreateUserPlaceholder(randomUsernameValue, "Password123");
 
             result = await _controller.AdminLogin(loginRequestBodyDto);
 
@@ -56,8 +60,7 @@ namespace Controller_Tests
 
             Assert.NotNull(jwtToken.Token);
             Assert.NotEmpty(jwtToken.Token);
-            _output.WriteLine(_jwtService.DecodeJwtString(jwtToken.Token).Claims.First().Value);
-            Assert.Equal("UserPlaceholder", _jwtService.GetJwtClaimValue(jwtToken.Token, JwtRegisteredClaimNames.Name));
+            Assert.Equal(randomUsernameValue, _jwtService.GetJwtClaimValue(jwtToken.Token, JwtRegisteredClaimNames.Name));
 
             // Cleanup
             await DeleteAdminPlaceholder(adminPlaceholder);
