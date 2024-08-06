@@ -103,7 +103,7 @@ namespace Controller_Tests
             Assert.IsType<OkObjectResult>(result.Result);
             Assert.NotNull(GetObjectResultValue<Device>(result));
 
-            Device addedDevice = await _context.Devices.SingleOrDefaultAsync(d => d.Hwid.Equals(Hwid));
+            Device? addedDevice = await _context.Devices.SingleOrDefaultAsync(d => d.Hwid.Equals(Hwid));
 
             // Make sure the Device is in the database
             Assert.NotNull(addedDevice);
