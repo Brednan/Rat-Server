@@ -30,7 +30,7 @@ namespace Rat_Server.Controllers
         [ProducesResponseType<ExeFile>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetExeFile([FromHeader] string Authorization, string FileName)
+        public async Task<ActionResult> GetExeFile([FromHeader] string Authorization, string FileName)
         {
             Guid Hwid = new Guid(_jwtService.GetJwtClaimValue(Authorization, FileName));
             Device device = await _context.Devices.SingleAsync(d => d.Hwid == Hwid);

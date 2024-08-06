@@ -26,7 +26,7 @@ namespace Controller_Tests
         }
 
         [Fact]
-        private async void TestAdminLogin()
+        private async Task TestAdminLogin()
         {
             // Use a Guid to generate a value for the Username to make sure it's unique for this test
             string randomUsernameValue = Guid.NewGuid().ToString();
@@ -69,7 +69,7 @@ namespace Controller_Tests
         }
 
         [Fact]
-        private async void TestRegisterDevice()
+        private async Task TestRegisterDevice()
         {
             // Generate a Guid for the Hwid to use for the placeholder device
             Guid Hwid = Guid.NewGuid();
@@ -110,6 +110,34 @@ namespace Controller_Tests
 
             // Cleanup
             await DeleteDevicePlaceholder(addedDevice);
+        }
+
+        [Fact]
+        private async Task TestDeviceLogin()
+        {
+            // Generate a Guid for the Hwid to use for the placeholder device
+            Guid Hwid = Guid.NewGuid();
+
+            // Create the Device Placeholder we'll use for the test
+            Device devicePlaceholder = await CreateDevicePlaceholder(Hwid, Guid.NewGuid().ToString());
+
+            // Test with the Hwid of a device that already exists
+            var result = await _controller.DeviceLogin(Hwid);
+
+            // Make sure we got a 200 response
+            Assert.IsType<OkObjectResult>(result.Result);
+            
+            // Make sure the Token in the response isn't empty
+            Assert.NotEmpty(GetObjectResultValue<JwtTokenDto>(result).Token);
+
+            // Delete the Device Placeholder
+            await DeleteDevicePlaceholder(devicePlaceholder);
+
+            // Try to login with the placeholder now that it doesn't exist
+            result = await _controller.DeviceLogin(Hwid);
+
+            // Make sure we got an Unauthorized result
+            Assert.IsType<UnauthorizedResult>(result.Result);
         }
     }
 }

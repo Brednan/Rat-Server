@@ -95,11 +95,6 @@ namespace Rat_Server.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<JwtTokenDto>> DeviceLogin([FromBody] Guid Hwid)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(Hwid);
-            }
-
             Device? device = await _context.Devices.SingleOrDefaultAsync(d => d.Hwid.Equals(Hwid));
             if (device == null)
             {
