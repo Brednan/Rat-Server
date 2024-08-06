@@ -66,5 +66,28 @@ namespace Controller_Tests
             await DeleteAdminPlaceholder(adminPlaceholder);
             await DeleteUserPlaceholder(userPlaceholder);
         }
+
+        [Fact]
+        private async void TestRegisterDevice()
+        {
+            // Generate a Guid for the Hwid to use for the placeholder device
+            Guid Hwid = Guid.NewGuid();
+
+            // Use a Guid to generate a value for the Name to make sure it's unique for this test
+            string deviceName = Guid.NewGuid().ToString();
+
+            // Create the Device Placeholder we'll use for the test
+            Device devicePlaceholder = await CreateDevicePlaceholder(Hwid, deviceName);
+
+            // Create the payload we'll use for testing the endpoint
+            RegisterDeviceRequestBodyDto testPayload = new RegisterDeviceRequestBodyDto
+            {
+                Hwid = Hwid,  // Give it the same Hwid as the 
+                DeviceName = deviceName
+            };
+
+            // Test with the Hwid of a device that already exists
+            var result = _controller.RegisterDevice(testPayload);
+        }
     }
 }

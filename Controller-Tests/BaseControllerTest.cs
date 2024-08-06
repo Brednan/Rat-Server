@@ -36,13 +36,14 @@ namespace Controller_Tests
         /// to the database and returns the result. This is meant for
         /// a test that requires a random device to be in the database.
         /// </summary>
+        /// <param name="Hwid">The Hwid of the Device</param>
         /// <param name="Name">The name of the Device</param>
         /// <returns>The newly created Device</returns>
-        protected async Task<Device> CreateDevicePlaceholder(string Name)
+        protected async Task<Device> CreateDevicePlaceholder(Guid Hwid, string Name)
         {
             Device device = new Device
             {
-                Hwid = new Guid(),  // Use a random Hwid
+                Hwid = Hwid,
                 Name = "TestGetDeviceCommands",
                 LastActive = DateTime.Now
             };
@@ -127,20 +128,6 @@ namespace Controller_Tests
         {
             _context.Users.Remove(userPlaceholder);
             await _context.SaveChangesAsync();
-        }
-
-        protected async Task<Device> CreateDevicePlaceholder(Guid Hwid, string Name)
-        {
-            Device devicePlaceholder = new Device
-            {
-                Hwid = Hwid,
-                Name = Name
-            };
-
-            await _context.Devices.AddAsync(devicePlaceholder);
-            await _context.SaveChangesAsync();
-
-            return devicePlaceholder;
         }
 
         protected async Task DeleteDevicePlaceholder(Device devicePlaceholder)
