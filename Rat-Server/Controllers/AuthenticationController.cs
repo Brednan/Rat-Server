@@ -72,11 +72,6 @@ namespace Rat_Server.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<Device>> RegisterDevice([FromBody] RegisterDeviceRequestBodyDto deviceInfo)
         {
-            if (!ModelState.IsValid) 
-            {
-                return BadRequest(deviceInfo);
-            }
-
             if (await _context.Devices.SingleOrDefaultAsync(d => d.Hwid.Equals(deviceInfo.Hwid)) != null)
             {
                 return Conflict("A device with the same Hwid already exists");
