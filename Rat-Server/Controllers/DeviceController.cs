@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Rat_Server.Model.Entities;
 using Rat_Server.Model.DTOs;
 using Rat_Server.Model.Context;
+using System.Linq.Expressions;
+using Rat_Server.Model.Services;
 
 namespace Rat_Server.Controllers
 {
@@ -17,20 +19,22 @@ namespace Rat_Server.Controllers
     {
         private readonly RatDbContext _context;
         private readonly IConfiguration _config;
+        private readonly JwtService _jwtService;
 
         public DeviceController(RatDbContext context, IConfiguration config)
         {
             _context = context;
             _config = config;
+            _jwtService = new JwtService(config);
         }
 
         [HttpGet("GetCurrentCommand")]
         [ProducesResponseType(typeof(DeviceCommandDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public ActionResult<DeviceCommandDto> GetCurrentCommand([FromHeader] Guid Hwid)
+        public ActionResult<DeviceCommandDto> GetCurrentCommand([FromHeader] string Authorization)
         {
+            Guid Hwid = new Guid(_jwtService.ParseAuthorizationHeader(Authorization));
+
             // Retrieve the list of commands for the device and order them by the date they were added
             List<Command> commands = _context.Commands.Where(c => c.Device.Hwid == Hwid).OrderBy(c => c.DateAdded).ToList();
             

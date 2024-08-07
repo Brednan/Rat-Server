@@ -40,5 +40,18 @@ namespace Rat_Server.Model.Services
             JwtSecurityToken decodedJwtToken = DecodeJwtString(jwtToken);
             return decodedJwtToken.Claims.First(c => c.Type.Equals(claimType)).Value;
         }
+
+        /// <summary>
+        /// Returns the token from the string in the Authorization header.
+        /// </summary>
+        /// <param name="authorizationHeader">
+        ///     The header to extract the token from.
+        ///     Format: Bearer <TOKEN>
+        /// </param>
+        /// <returns>The JWT token extracted from the string</returns>
+        public string ParseAuthorizationHeader(string authorizationHeader)
+        {
+            return authorizationHeader.Split(' ')[1];
+        }
     }
 }
