@@ -31,12 +31,6 @@ namespace Rat_Server.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult<DeviceCommandDto> GetCurrentCommand([FromHeader] Guid Hwid)
         {
-            // If the client's Hwid isn't registered, send back an Unauthorized status code
-            if(_context.Devices.Find(Hwid) == null)
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized);
-            }
-
             // Retrieve the list of commands for the device and order them by the date they were added
             List<Command> commands = _context.Commands.Where(c => c.Device.Hwid == Hwid).OrderBy(c => c.DateAdded).ToList();
             
