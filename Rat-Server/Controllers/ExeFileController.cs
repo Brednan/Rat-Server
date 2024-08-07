@@ -28,13 +28,9 @@ namespace Rat_Server.Controllers
 
         [HttpGet("GetExeFile/{FileName}")]
         [ProducesResponseType<ExeFile>(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetExeFile([FromHeader] string Authorization, string FileName)
+        public async Task<ActionResult<ExeFile>> GetExeFile(string FileName)
         {
-            Guid Hwid = new Guid(_jwtService.GetJwtClaimValue(Authorization, FileName));
-            Device device = await _context.Devices.SingleAsync(d => d.Hwid == Hwid);
-
             ExeFile? exeFile = await _context.ExeFiles.SingleOrDefaultAsync(e => e.Name == FileName);
             if(exeFile == null)
             {

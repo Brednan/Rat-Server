@@ -13,6 +13,8 @@ namespace Controller_Tests
         protected readonly RatDbContext _context;
         protected readonly IConfiguration _config;
         protected readonly ITestOutputHelper _output;
+        protected readonly JwtService _jwtService;
+        protected readonly AuthenticationService _authenticationService;
 
         public BaseControllerTest(ITestOutputHelper output)
         {
@@ -26,13 +28,16 @@ namespace Controller_Tests
                           $"user={config["DATABASE_USER"]};" +
                           $"password={config["DATABASE_PASSWORD"]}");
 
-            _context = new RatDbContext(options.Options);
             _config = config;
+
+            _context = new RatDbContext(options.Options);
+            _jwtService = new JwtService(_config);
+            _authenticationService = new AuthenticationService();
         }
 
 
         /// <summary>
-        /// Created a device object with a random HWID, adds it
+        /// Creates a device object with a random HWID, adds it
         /// to the database and returns the result. This is meant for
         /// a test that requires a random device to be in the database.
         /// </summary>
@@ -57,9 +62,11 @@ namespace Controller_Tests
         {
             Command command = new Command
             {
+                commandId = Guid.NewGuid(),
                 DevicedHwid = device.Hwid,
                 CommandValue = CommandValue,
-                Device = device
+                Device = device,
+                DateAdded = DateTime.Now
             };
             await _context.Commands.AddAsync(command);
             await _context.SaveChangesAsync();
@@ -118,6 +125,33 @@ namespace Controller_Tests
             return await CreateAdminPlaceholder(userPlaceholder);
         }
 
+        protected async Task<ExeFile> CreateExeFilePlaceholder()
+        {
+            ExeFile exeFile = new ExeFile
+            {
+               
+                Name = Guid.NewGuid().ToString(), // Use Guid for the name to make sure it's unique
+                Content = "Test File Content"
+            };
+
+            await _context.ExeFiles.AddAsync(exeFile);
+            await _context.SaveChangesAsync();
+
+            return await _context.ExeFiles.SingleAsync(e => e.Name.Equals(exeFile.Name));
+        }
+
+        protected async Task DeleteCommandPlaceholder(Command commandPlaceholder)
+        {
+            _context.Commands.Remove(commandPlaceholder);
+            await _context.SaveChangesAsync();
+        }
+
+        protected async Task DeleteExeFilePlaceholder(ExeFile exePlaceholder)
+        {
+            _context.ExeFiles.Remove(exePlaceholder);
+            await _context.SaveChangesAsync();
+        }
+
         protected async Task DeleteAdminPlaceholder(Admin adminPlaceholder)
         {
             _context.Admins.Remove(adminPlaceholder);
@@ -135,6 +169,8 @@ namespace Controller_Tests
             _context.Devices.Remove(devicePlaceholder);
             await _context.SaveChangesAsync();
         }
+
+        
 
         /// <summary>
         /// Used for parsing the Value contained in an ActionResult.Result object.

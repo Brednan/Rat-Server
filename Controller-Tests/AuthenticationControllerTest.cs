@@ -17,12 +17,10 @@ namespace Controller_Tests
     public class AuthenticationControllerTest : BaseControllerTest
     {
         AuthenticationController _controller;
-        JwtService _jwtService;
 
         public AuthenticationControllerTest(ITestOutputHelper output) : base(output)
         {
             _controller = new AuthenticationController(_context, _config);
-            _jwtService = new JwtService(_config);
         }
 
         [Fact]

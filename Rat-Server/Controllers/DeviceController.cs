@@ -31,12 +31,12 @@ namespace Rat_Server.Controllers
         [HttpGet("GetCurrentCommand")]
         [ProducesResponseType(typeof(DeviceCommandDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult<DeviceCommandDto> GetCurrentCommand([FromHeader] string Authorization)
+        public async Task<ActionResult<DeviceCommandDto>> GetCurrentCommand([FromHeader] string Authorization)
         {
-            Guid Hwid = new Guid(_jwtService.ParseAuthorizationHeader(Authorization));
+            Guid Hwid = new Guid(_jwtService.GetJwtClaimValue(_jwtService.ParseAuthorizationHeader(Authorization), "Hwid"));
 
             // Retrieve the list of commands for the device and order them by the date they were added
-            List<Command> commands = _context.Commands.Where(c => c.Device.Hwid == Hwid).OrderBy(c => c.DateAdded).ToList();
+            List<Command> commands = await _context.Commands.Where(c => c.Device.Hwid == Hwid).OrderBy(c => c.DateAdded).ToListAsync();
             
             if(commands.Any())
             {
