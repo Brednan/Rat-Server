@@ -170,7 +170,11 @@ namespace Controller_Tests
             await _context.SaveChangesAsync();
         }
 
-        
+        protected async Task DeleteShellCodePlaceholder(ShellCode shellCodePlaceholder)
+        {
+            _context.ShellCodes.Remove(shellCodePlaceholder);
+            await _context.SaveChangesAsync();
+        }
 
         /// <summary>
         /// Used for parsing the Value contained in an ActionResult.Result object.

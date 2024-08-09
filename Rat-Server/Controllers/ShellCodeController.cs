@@ -24,7 +24,7 @@ namespace Rat_Server.Controllers
         }
 
         [HttpGet("GetShellCode/{Name}")]
-        public async Task<ActionResult> GetShellCode(string Name)
+        public async Task<ActionResult<ShellCodeDto>> GetShellCode(string Name)
         {
             ShellCode? shellCode = await _context.ShellCodes.SingleOrDefaultAsync(shellCode => shellCode.Name == Name);
             if (shellCode == null)
