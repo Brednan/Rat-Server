@@ -26,7 +26,7 @@ namespace Controller_Tests
         }
 
         [Fact]
-        public async void TestGetAllInfectedDevices()
+        public async Task TestGetAllInfectedDevices()
         {
             List<Device> infectedDevices = await _context.Devices.ToListAsync();
             var result = await _controller.GetAllInfectedDevices();
@@ -43,7 +43,7 @@ namespace Controller_Tests
         }
 
         [Fact]
-        public async void TestGetDeviceCommands()
+        public async Task TestGetDeviceCommands()
         {
             Device devicePlaceholder = await CreateDevicePlaceholder(Guid.NewGuid(), Guid.NewGuid().ToString());
             List<Command> commandPlaceholders = [];
@@ -80,7 +80,7 @@ namespace Controller_Tests
         }
 
         [Fact]
-        private async void TestGetAllShellCode()
+        private async Task TestGetAllShellCode()
         {
             List<ShellCode> shellCodeEntities = await _context.ShellCodes.ToListAsync();
             var result = await _controller.GetAllShellCode();
@@ -98,7 +98,7 @@ namespace Controller_Tests
         }
 
         [Fact]
-        private async void TestAddShellCode()
+        private async Task TestAddShellCode()
         {
             // Test adding shellcode with a name that already exists
             ShellCode shellCodePlaceholder = await CreateShellCodePlaceholder("ShellCode Placeholder", "ffffffffffffffff");
