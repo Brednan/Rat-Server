@@ -116,8 +116,8 @@ namespace Controller_Tests
             // Test adding ShellCode with a name that doesn't exist
             result = await _controller.AddShellCode(new ShellCodeDto
             {
-                Name = "ShellCode Placeholder",
-                Code = "ffffffffffffffff"
+                Name = shellCodePlaceholder.Name,
+                Code = shellCodePlaceholder.Code
             });
 
             Assert.NotNull(result.Result);
