@@ -74,10 +74,23 @@ namespace Rat_Server.Controllers
             }
         }
 
-/*        [HttpGet("DeleteShellCode/{id}")]
+        [HttpDelete("DeleteShellCode/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]*/
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteShellCode(int id)
+        {
+            ShellCode? shellCode = await _context.ShellCodes.SingleOrDefaultAsync(s => s.ShellCodeId == id);
+            
+            if(shellCode == null)
+            {
+                return NotFound();
+            }
+            
+            _context.ShellCodes.Remove(shellCode);
+            await _context.SaveChangesAsync();
+            
+            return NoContent();
+        }
 
         [HttpGet("GetAllShellCode")]
         [ProducesResponseType(typeof(List<ShellCodeDto>), StatusCodes.Status200OK)]
