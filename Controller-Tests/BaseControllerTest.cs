@@ -131,7 +131,7 @@ namespace Controller_Tests
             {
                
                 Name = Guid.NewGuid().ToString(), // Use Guid for the name to make sure it's unique
-                Content = "Test File Content"
+                Content = new byte[1024]
             };
 
             await _context.ExeFiles.AddAsync(exeFile);

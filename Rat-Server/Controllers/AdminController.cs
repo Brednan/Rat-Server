@@ -113,15 +113,22 @@ namespace Rat_Server.Controllers
         [HttpPost("AddExeFile")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> AddExeFile(FormFile exeFile)
+        public async Task<ActionResult> AddExeFile(IFormFile exeFile)
         {
+            // Open the file stream so we can read the content from it
             Stream fileReadStream = exeFile.OpenReadStream();
+
+            // Create a byte array buffer to store the file content
             byte[] fileContentBuffer = new byte[fileReadStream.Length];
 
+            // Copy the file content to the buffer
             if (await fileReadStream.ReadAsync(fileContentBuffer, 0, fileContentBuffer.Length) != fileReadStream.Length)
             {
+                // If unable to read the file content, send back a 400 response
                 return BadRequest("Unable to read file");
             }
+
+            return Ok();
         }
     }
 }

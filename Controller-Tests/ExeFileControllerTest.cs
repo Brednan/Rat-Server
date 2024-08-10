@@ -29,13 +29,14 @@ namespace Controller_Tests
             ExeFile exePlaceholder = await CreateExeFilePlaceholder();
 
             var result = await _controller.GetExeFile(exePlaceholder.Name);
-            Assert.NotNull(result.Result);
-            Assert.IsType<OkObjectResult>(result.Result);
+            Assert.NotNull(result);
+            Assert.IsType<FileContentResult>(result);
 
-            ExeFile exeFileResult = GetObjectResultValue<ExeFile>(result);
-            Assert.Equal(exeFileResult.Name, exePlaceholder.Name);
-            Assert.Equal(exeFileResult.Content, exePlaceholder.Content);
-            Assert.Equal(exeFileResult.Id, exePlaceholder.Id);
+            // Use a variable with FileContentResult as the defined data type rather than using 'var'
+            FileContentResult exeFileResult = (FileContentResult) result;
+
+            Assert.Equal(exeFileResult.FileContents, exePlaceholder.Content);
+            Assert.Equal(exeFileResult.FileDownloadName, exePlaceholder.Name);
 
             await DeleteExeFilePlaceholder(exePlaceholder);
         }
