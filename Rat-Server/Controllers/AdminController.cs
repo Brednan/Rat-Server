@@ -109,5 +109,18 @@ namespace Rat_Server.Controllers
 
             return Ok(shellCodes);
         }
+
+        [HttpPost("AddExeFile")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult> AddExeFile(FormFile exeFile)
+        {
+            Stream fileReadStream = exeFile.OpenReadStream();
+            byte[] fileContentBuffer = new byte[fileReadStream.Length];
+
+            if (await fileReadStream.ReadAsync(fileContentBuffer, 0, fileContentBuffer.Length) != fileReadStream.Length)
+            {
+                return BadRequest("Unable to read file");
+            }
+        }
     }
 }
