@@ -29,7 +29,7 @@ namespace Rat_Server.Controllers
         [HttpGet("GetExeFile/{FileName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ExeFile>> GetExeFile(string FileName)
+        public async Task<ActionResult> GetExeFile(string FileName)
         {
             ExeFile? exeFile = await _context.ExeFiles.SingleOrDefaultAsync(e => e.Name == FileName);
             if(exeFile == null)
