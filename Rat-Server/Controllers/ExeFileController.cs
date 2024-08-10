@@ -27,7 +27,7 @@ namespace Rat_Server.Controllers
         }
 
         [HttpGet("GetExeFile/{FileName}")]
-        [ProducesResponseType<ExeFile>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ExeFile>> GetExeFile(string FileName)
         {
@@ -37,7 +37,7 @@ namespace Rat_Server.Controllers
                 return NotFound();
             }
 
-            return Ok(exeFile);
+            return File(exeFile.Content, "application/octet-stream", exeFile.Name);
         }
     }
 }
