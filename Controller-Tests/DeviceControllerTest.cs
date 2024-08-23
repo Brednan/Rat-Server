@@ -31,7 +31,7 @@ namespace Controller_Tests
 
             string authToken = $"Bearer { _jwtService.GenerateJwtToken([new Claim("DeviceRegistered", "true"),
                                                                         new Claim("Hwid", devicePlaceholder.Hwid.ToString()),
-                                                                        new Claim(ClaimTypes.Name, devicePlaceholder.Name)]) }";
+                                                                        new Claim(ClaimTypes.Name, devicePlaceholder.Name)], false) }";
 
             // Add 10 commands to the Device placeholder
             for (int i = 0; i < 10; i++)

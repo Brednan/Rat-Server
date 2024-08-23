@@ -62,7 +62,7 @@ namespace Rat_Server.Controllers
             {
                 Token = _jwtService.GenerateJwtToken([new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId.ToString()),
                                                       new Claim(JwtRegisteredClaimNames.Name, userInfo.Name),
-                                                      new Claim("Admin", "true")])
+                                                      new Claim("Admin", "true")], true)
             });
         }
 
@@ -105,7 +105,7 @@ namespace Rat_Server.Controllers
             {
                 Token = _jwtService.GenerateJwtToken([new Claim("DeviceRegistered", "true"),
                                                       new Claim("Hwid", device.Hwid.ToString()),
-                                                      new Claim(ClaimTypes.Name, device.Name)])
+                                                      new Claim(ClaimTypes.Name, device.Name)], false)
             });
         }
     }

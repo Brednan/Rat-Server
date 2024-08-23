@@ -14,16 +14,20 @@ namespace Rat_Server.Model.Services
             _config = config;
         }
 
-        public string GenerateJwtToken(Claim[] claims)
+        public string GenerateJwtToken(Claim[] claims, bool expires)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT_KEY"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var Sectoken = new JwtSecurityToken(_config["JWT_ISSUER"],
-              _config["JWT_ISSUER"],
-              claims,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
+            
+            var Sectoken = expires ? new JwtSecurityToken(_config["JWT_ISSUER"],
+                                                          _config["JWT_ISSUER"],
+                                                          claims,
+                                                          expires: DateTime.Now.AddMinutes(120),
+                                                          signingCredentials: credentials)
+                                   : new JwtSecurityToken(_config["JWT_ISSUER"],
+                                                          _config["JWT_ISSUER"],
+                                                          claims,
+                                                          signingCredentials: credentials);
 
             string token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
 

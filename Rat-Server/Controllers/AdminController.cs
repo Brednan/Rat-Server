@@ -128,7 +128,18 @@ namespace Rat_Server.Controllers
                 return BadRequest("Unable to read file");
             }
 
-            return Ok();
+            // Create the ExeFile entity to add to the database
+            ExeFile exeFileEntity = new ExeFile
+            {
+                Content = fileContentBuffer,
+                Name = exeFile.Name
+            };
+
+            // Add the Exe File to the database
+            await _context.ExeFiles.AddAsync(exeFileEntity);
+
+            // Return 204 No Content to indicate to the client the file was successfully added
+            return NoContent();
         }
     }
 }
