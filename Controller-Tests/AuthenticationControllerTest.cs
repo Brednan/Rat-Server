@@ -81,7 +81,7 @@ namespace Controller_Tests
             // Create the payload we'll use for testing the endpoint
             RegisterDeviceRequestBodyDto testPayload = new RegisterDeviceRequestBodyDto
             {
-                Hwid = Hwid,
+                Hwid = Hwid.ToString(),
                 DeviceName = deviceName
             };
 

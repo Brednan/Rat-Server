@@ -70,7 +70,7 @@ namespace Rat_Server.Controllers
         [ProducesResponseType<Device>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult> RegisterDevice([FromBody] RegisterDeviceRequestBodyDto deviceInfo)
+        public async Task<ActionResult<Device>> RegisterDevice([FromBody] RegisterDeviceRequestBodyDto deviceInfo)
         {
             if (await _context.Devices.SingleOrDefaultAsync(d => d.Hwid.Equals(new Guid(deviceInfo.Hwid))) != null)
             {
