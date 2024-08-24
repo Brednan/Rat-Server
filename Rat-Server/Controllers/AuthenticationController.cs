@@ -67,7 +67,7 @@ namespace Rat_Server.Controllers
         }
 
         [HttpPost("RegisterDevice")]
-        [ProducesResponseType<Device>(StatusCodes.Status201Created)]
+        [ProducesResponseType<Device>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<Device>> RegisterDevice([FromBody] RegisterDeviceRequestBodyDto deviceInfo)
