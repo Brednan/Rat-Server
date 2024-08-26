@@ -93,9 +93,9 @@ namespace Rat_Server.Controllers
         [ProducesResponseType<JwtTokenDto>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<JwtTokenDto>> DeviceLogin([FromBody] Guid Hwid)
+        public async Task<ActionResult<JwtTokenDto>> DeviceLogin([FromBody] string Hwid)
         {
-            Device? device = await _context.Devices.SingleOrDefaultAsync(d => d.Hwid.Equals(Hwid));
+            Device? device = await _context.Devices.SingleOrDefaultAsync(d => d.Hwid.Equals(new Guid(Hwid)));
             if (device == null)
             {
                 return Unauthorized();

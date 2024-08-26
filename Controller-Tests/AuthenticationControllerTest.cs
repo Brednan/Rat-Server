@@ -120,7 +120,7 @@ namespace Controller_Tests
             Device devicePlaceholder = await CreateDevicePlaceholder(Hwid, Guid.NewGuid().ToString());
 
             // Test with the Hwid of a device that already exists
-            var result = await _controller.DeviceLogin(Hwid);
+            var result = await _controller.DeviceLogin(Hwid.ToString());
 
             // Make sure we got a 200 response
             Assert.IsType<OkObjectResult>(result.Result);
@@ -132,7 +132,7 @@ namespace Controller_Tests
             await DeleteDevicePlaceholder(devicePlaceholder);
 
             // Try to login with the placeholder now that it doesn't exist
-            result = await _controller.DeviceLogin(Hwid);
+            result = await _controller.DeviceLogin(Hwid.ToString());
 
             // Make sure we got an Unauthorized result
             Assert.IsType<UnauthorizedResult>(result.Result);
