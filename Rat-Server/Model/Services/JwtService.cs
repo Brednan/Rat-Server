@@ -7,25 +7,27 @@ namespace Rat_Server.Model.Services
 {
     public class JwtService
     {
-        IConfiguration _config;
+        private readonly string jwtIssuer;
+        private readonly string jwtKey;
 
-        public JwtService(IConfiguration config) 
+        public JwtService(IConfiguration config)
         {
-            _config = config;
+            jwtIssuer = config["JWT_ISSUER"];
+            jwtKey = config["JWT_KEY"];
         }
 
         public string GenerateJwtToken(Claim[] claims, bool expires)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT_KEY"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             
-            var Sectoken = expires ? new JwtSecurityToken(_config["JWT_ISSUER"],
-                                                          _config["JWT_ISSUER"],
+            var Sectoken = expires ? new JwtSecurityToken(jwtIssuer,
+                                                          jwtIssuer,
                                                           claims,
                                                           expires: DateTime.Now.AddMinutes(120),
                                                           signingCredentials: credentials)
-                                   : new JwtSecurityToken(_config["JWT_ISSUER"],
-                                                          _config["JWT_ISSUER"],
+                                   : new JwtSecurityToken(jwtIssuer,
+                                                          jwtIssuer,
                                                           claims,
                                                           signingCredentials: credentials);
 

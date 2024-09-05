@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Rat_Server.Custom_Middleware;
 using Microsoft.IdentityModel.Tokens;
 using Rat_Server.Model.Context;
 using System.Text;
@@ -46,7 +47,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("DeviceAuthenticated", policy => policy.RequireClaim("DeviceAuthenticated", "true"));
 });
 
+builder.Services.AddTransient<UpdateDeviceLastActive>();
+
 var app = builder.Build();
+
+app.UseFactoryActivatedMiddleware();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
