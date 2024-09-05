@@ -29,6 +29,7 @@ namespace Rat_Server.Model.Services
                                    : new JwtSecurityToken(jwtIssuer,
                                                           jwtIssuer,
                                                           claims,
+                                                          expires: DateTime.Now.AddMinutes(240),
                                                           signingCredentials: credentials);
 
             string token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
