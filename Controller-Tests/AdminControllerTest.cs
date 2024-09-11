@@ -43,7 +43,7 @@ namespace Controller_Tests
         }
 
         [Fact]
-        public async Task TestGetDeviceCommands()
+        public async Task TestGetCommands()
         {
             Device devicePlaceholder = await CreateDevicePlaceholder(Guid.NewGuid(), Guid.NewGuid().ToString());
             List<Command> commandPlaceholders = [];
