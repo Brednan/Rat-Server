@@ -53,7 +53,7 @@ namespace Controller_Tests
                 commandPlaceholders.Add(await CreateCommandPlaceholder(devicePlaceholder, $"Test Command {i}"));
             }
 
-            var actionResult = await _controller.GetDeviceCommands(devicePlaceholder.Hwid);
+            var actionResult = await _controller.GetCommands(devicePlaceholder.Hwid.ToString());
             Assert.NotNull(actionResult.Result);
             Assert.IsType<OkObjectResult>(actionResult.Result);
 
