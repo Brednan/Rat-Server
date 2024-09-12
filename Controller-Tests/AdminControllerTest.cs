@@ -57,17 +57,16 @@ namespace Controller_Tests
             Assert.NotNull(actionResult.Result);
             Assert.IsType<OkObjectResult>(actionResult.Result);
 
-            var responseValue = GetObjectResultValue<List<Command>>(actionResult.Result);
-            Assert.IsType<List<Command>>(responseValue);
+            var responseValue = GetObjectResultValue<List<DeviceCommandDto>>(actionResult.Result);
+            Assert.IsType<List<DeviceCommandDto>>(responseValue);
             Assert.Equal(responseValue.Count, commandPlaceholders.Count);
 
             for (int i = 0; i < responseValue.Count; i++)
             {
-                Command? c = commandPlaceholders.Find(c => c.commandId.Equals(responseValue[i].commandId));
+                Command? c = commandPlaceholders.Find(c => c.commandId.ToString().Equals(responseValue[i].commandId));
                 Assert.NotNull(c);
-                Assert.Equal(responseValue[i].DevicedHwid, c.DevicedHwid);
+                Assert.Equal(responseValue[i].Hwid, c.DevicedHwid.ToString());
                 Assert.Equal(responseValue[i].CommandValue, c.CommandValue);
-                Assert.Equal(responseValue[i].DateAdded, c.DateAdded);
             }
 
             foreach(Command c in commandPlaceholders)
@@ -129,6 +128,48 @@ namespace Controller_Tests
 
             _context.Remove(addedShellCode);
             await _context.SaveChangesAsync();
+        }
+
+        [Fact]
+        private async Task TestAddCommand()
+        {
+            Device devicePlaceholder = await CreateDevicePlaceholder(Guid.NewGuid(), Guid.NewGuid().ToString());
+
+            // Test the AddCommand endpoint with 10 different commands
+            for (int i = 0; i < 10; i++)
+            {
+                Command command = new Command
+                {
+                    Device = devicePlaceholder,
+                    DevicedHwid = devicePlaceholder.Hwid,
+                    CommandValue = $"Test Command {i}",
+                    DateAdded = DateTime.Now
+                };
+
+                ActionResult<DeviceCommandDto> addCommandResult = await _controller.AddCommand(new AddCommandDto
+                {
+                    CommandValue = command.CommandValue,
+                    Hwid = command.DevicedHwid.ToString()
+                });
+
+                DeviceCommandDto? addedCommandResponseDto = GetObjectResultValue<DeviceCommandDto>(addCommandResult);
+                
+                Assert.NotNull(addedCommandResponseDto); // Make sure we got a DeviceCommandDto object returned
+
+                // Make sure the values in the response match the command we added
+                Assert.Equal(command.CommandValue, addedCommandResponseDto.CommandValue);
+                Assert.Equal(command.DevicedHwid.ToString(), addedCommandResponseDto.Hwid);
+
+                // Retrieve the command from the database
+                Command? addedCommand = await _context.Commands.SingleOrDefaultAsync(c => c.commandId.ToString().Equals(addedCommandResponseDto.commandId));
+
+                // Make sure the command is actually in the database
+                Assert.NotNull(addedCommand);
+
+                // Remove the command from the database
+                _context.Commands.Remove(addedCommand);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

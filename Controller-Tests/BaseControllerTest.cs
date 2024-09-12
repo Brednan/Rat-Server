@@ -5,6 +5,7 @@ using Rat_Server.Model.Context;
 using Rat_Server.Model.Entities;
 using Rat_Server.Model.Services;
 using Xunit.Abstractions;
+using Microsoft.EntityFrameworkCore.InMemory;
 
 namespace Controller_Tests
 {
@@ -23,10 +24,7 @@ namespace Controller_Tests
             var config = new ConfigurationBuilder().AddUserSecrets<BaseControllerTest>().Build();
 
             DbContextOptionsBuilder<RatDbContext> options = new DbContextOptionsBuilder<RatDbContext>()
-                .UseMySQL($"server={config["DATABASE_IP"]};" +
-                          $"database={config["DATABASE_NAME"]};" +
-                          $"user={config["DATABASE_USER"]};" +
-                          $"password={config["DATABASE_PASSWORD"]}");
+                .UseInMemoryDatabase(databaseName: "RatControllerTest");
 
             _config = config;
 

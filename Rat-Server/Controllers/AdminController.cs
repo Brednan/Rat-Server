@@ -174,7 +174,12 @@ namespace Rat_Server.Controllers
             await _context.Commands.AddAsync(command);
             await _context.SaveChangesAsync();
 
-            return Created();
+            return Ok(new DeviceCommandDto
+            {
+                Hwid = command.DevicedHwid.ToString(),
+                CommandValue = command.CommandValue,
+                commandId = command.commandId.ToString(),
+            });
         }
     }
 }
