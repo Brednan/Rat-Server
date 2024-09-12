@@ -15,13 +15,13 @@ namespace Rat_Server.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class DeviceController : ControllerBase
+    public class CommandController : ControllerBase
     {
         private readonly RatDbContext _context;
         private readonly IConfiguration _config;
         private readonly JwtService _jwtService;
 
-        public DeviceController(RatDbContext context, IConfiguration config)
+        public CommandController(RatDbContext context, IConfiguration config)
         {
             _context = context;
             _config = config;

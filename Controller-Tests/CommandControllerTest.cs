@@ -14,13 +14,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Controller_Tests
 {
-    public class DeviceControllerTest : BaseControllerTest
+    public class CommandControllerTest : BaseControllerTest
     {
-        DeviceController _controller;
+        CommandController _controller;
 
-        public DeviceControllerTest(ITestOutputHelper output) : base(output)
+        public CommandControllerTest(ITestOutputHelper output) : base(output)
         {
-            _controller = new DeviceController(_context, _config);
+            _controller = new CommandController(_context, _config);
         }
 
         [Fact]
